@@ -243,15 +243,18 @@ namespace SeleniumTest
 
             // Initialize Chrome Driver
             var chromeOptions = new ChromeOptions();
-            chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
+            //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
             chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
             IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
 
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
 
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600); // Set page load timeout to 30 seconds (example)
+
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(300));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -274,6 +277,9 @@ namespace SeleniumTest
             // Perform actions on the element, for example, click
             userManagementLink.Click();
 
+            WebDriverWait wait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            wait1.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[routerlink='/usermgt/createUser'][routerlinkactive='active']")));
+
             // Find and interact with the <a> element
             IWebElement createUserLink = driver.FindElement(By.CssSelector("a[routerlink='/usermgt/createUser'][routerlinkactive='active']"));
 
@@ -282,8 +288,8 @@ namespace SeleniumTest
 
             //Creating a User
                 // Wait for the form to load
-                WebDriverWait wait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                wait1.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".card-body")));                       
+                WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                wait2.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".card-body")));
 
             try
             {
@@ -291,7 +297,7 @@ namespace SeleniumTest
                 string baseUsername = "Avishka";
 
                 // Initialize a counter
-                int counter = 97;
+                int counter = 98;
 
                 // Create the next username by appending the counter
                 string nextUsername = baseUsername + counter;
@@ -313,88 +319,103 @@ namespace SeleniumTest
                 {
                     submitButton.Click();
 
-                    //// Wait for the console log to capture the result
-                    //wait1.Until(d => d.Manage().Logs.GetLog(LogType.Browser).Count > 0);
+                    bool userAdded = false;
+                    IWebElement toastMessageElement = null;
 
-                    // Wait for the console log to capture the result
-                    var wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                    wait2.Until(d =>
+                    try
                     {
-                        try
+                        while (!userAdded)
                         {
-                            var logCount = d.Manage().Logs.GetLog(LogType.Browser).Count;
-                            Console.WriteLine($"Log Count: {logCount}");
-                            return logCount > 0;
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Exception during log retrieval: {ex.Message}");
-                            return false;
-                        }
-                    });
+                            // Find the div element containing the toast message
+                            toastMessageElement = driver.FindElement(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message"));
 
-                    // Read the console log entries
-                    var logs = driver.Manage().Logs.GetLog(LogType.Browser);
+                            // Get the text within the div element
+                            string toastMessage = toastMessageElement.Text;
 
-                    // Check the logs for relevant information
-                    foreach (var logEntry in logs)
-                    {
-                        if (logEntry.Message.Contains("username_taken"))
-                        {
+                            // Use the captured message as needed
+                            Console.WriteLine("Toast Message: " + toastMessage);
 
-                            // Find and interact with the <a> element
-                            IWebElement userManagementLink1 = driver.FindElement(By.CssSelector("a[href='#submenu1'][data-toggle='collapse']"));
 
-                            // Perform actions on the element, for example, click
-                            userManagementLink1.Click();
-
-                            // Find and interact with the <a> element
-                            IWebElement createUserLink1 = driver.FindElement(By.CssSelector("a[routerlink='/usermgt/createUser'][routerlinkactive='active']"));
-
-                            // Perform actions on the element, for example, click
-                            createUserLink1.Click();
-
-                            // Increment the counter for the next username
-                            counter++;
-
-                            // Create the next username by appending the counter
-                            nextUsername = baseUsername + counter;
-
-                            // Insert values into the form
-                            InsertSalutation(driver, "Mr");
-                            InsertUsername(driver, nextUsername);
-                            InsertFirstName(driver, "Avishka");
-                            InsertLastName(driver, "BoardPAC");
-                            InsertPrimaryEmail(driver, "avishkalaki@hotmail.com");
-                            InsertDeviceDisplayName(driver, "AvishkaBoardPAC");
-                            InsertUserType(driver, "Organizer");
-
-                            // You can add similar calls for other form fields
-
-                            // Click the submit button (assuming it's initially disabled)
-                            IWebElement submitButton1 = driver.FindElement(By.Id("submitBtn"));
-                            if (submitButton1.Enabled)
+                            if (toastMessage.Contains("User name " + nextUsername + " is already taken."))
                             {
-                                submitButton1.Click();
+
+                                // Find and interact with the <a> element
+                                IWebElement userManagementLink1 = driver.FindElement(By.CssSelector("a[href='#submenu1'][data-toggle='collapse']"));
+
+                                // Perform actions on the element, for example, click
+                                userManagementLink1.Click();
+
+
+                                // Find and interact with the <a> element
+                                IWebElement viewUserLink1 = driver.FindElement(By.CssSelector("a[routerlink='/usermgt/viewUsers'][routerlinkactive='active']"));
+
+                                // Perform actions on the element, for example, click
+                                viewUserLink1.Click();
+
+                                // Find and interact with the <a> element
+                                IWebElement createUserLink1 = driver.FindElement(By.CssSelector("a[routerlink='/usermgt/createUser'][routerlinkactive='active']"));
+
+                                // Perform actions on the element, for example, click
+                                createUserLink1.Click();
+
+                                // Increment the counter for the next username
+                                counter++;
+
+                                // Create the next username by appending the counter
+                                nextUsername = baseUsername + counter;
+
+                                // Insert values into the form
+                                InsertSalutation(driver, "Mr");
+                                InsertUsername(driver, nextUsername);
+                                InsertFirstName(driver, "Avishka");
+                                InsertLastName(driver, "BoardPAC");
+                                InsertPrimaryEmail(driver, "avishkalaki@hotmail.com");
+                                InsertDeviceDisplayName(driver, "AvishkaBoardPAC");
+                                InsertUserType(driver, "Organizer");
+
+                                // You can add similar calls for other form fields
+
+                                // Click the submit button (assuming it's initially disabled)
+                                IWebElement submitButton1 = driver.FindElement(By.Id("submitBtn"));
+                                if (submitButton1.Enabled)
+                                {
+                                    submitButton1.Click();
+                                }
+
                             }
+                            else
+                            {
+                                userAdded = true;
+                                // Handle other situations or proceed to the next page
+                                wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace with the expected URL
 
-                            // Close the browser
-                            driver.Quit();
+                                // Close the browser
+                                driver.Quit();
+
+                            }
                         }
-                        else
-                        {
 
-                            // Handle other situations or proceed to the next page
-                            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace with the expected URL
 
-                            // Close the browser
-                            driver.Quit();
 
-                        }
+
                     }
-                }               
+                    catch (StaleElementReferenceException)
+                    {
+                        // If the element reference becomes stale, re-find the element and retrieve the text again
+                        toastMessageElement = driver.FindElement(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message"));
 
-                
+                        // Get the text within the div element
+                        string toastMessage = toastMessageElement.Text;
+
+                        // Use the captured message as needed
+                        Console.WriteLine("Toast Message: " + toastMessage);
+                    }
+
+
+
+                }
+
+
             }
             catch (Exception ex)
             {
@@ -402,12 +423,12 @@ namespace SeleniumTest
                 throw;
             }
 
-            //// Wait for the next page to load (you may need to adjust the timing)
-            //wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace "expectedPage" with part of the URL of the next page
+            // Wait for the next page to load (you may need to adjust the timing)
+            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace "expectedPage" with part of the URL of the next page
 
 
-            //// Wait for the next page to load (you may need to adjust the timing)
-            //Thread.Sleep(1000);
+            // Wait for the next page to load (you may need to adjust the timing)
+            Thread.Sleep(1000);
 
             // Close the browser
             driver.Quit();
