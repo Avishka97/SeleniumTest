@@ -311,20 +311,22 @@ namespace SeleniumTest
                 InsertDeviceDisplayName(driver, "AvishkaBoardPAC");
                 InsertUserType(driver, "Organizer");
 
-                // You can add similar calls for other form fields
+                
+                bool userAdded = false;
 
-                // Click the submit button (assuming it's initially disabled)
-                IWebElement submitButton = driver.FindElement(By.Id("submitBtn"));
-                if (submitButton.Enabled)
+                while (!userAdded)
                 {
-                    submitButton.Click();
 
-                    bool userAdded = false;
-                    IWebElement toastMessageElement = null;
-
-                    try
+                    // Click the submit button (assuming it's initially disabled)
+                    IWebElement submitButton = driver.FindElement(By.Id("submitBtn"));
+                    if (submitButton.Enabled)
                     {
-                        while (!userAdded)
+                        submitButton.Click();
+
+
+                        IWebElement toastMessageElement = null;
+
+                        try
                         {
                             // Find the div element containing the toast message
                             toastMessageElement = driver.FindElement(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message"));
@@ -386,36 +388,32 @@ namespace SeleniumTest
                             else
                             {
                                 userAdded = true;
-                                // Handle other situations or proceed to the next page
-                                wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace with the expected URL
+                                //// Handle other situations or proceed to the next page
+                                //wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace with the expected URL
 
-                                // Close the browser
-                                driver.Quit();
+                                //// Close the browser
+                                //driver.Quit();
 
                             }
+
+                        }
+                        catch (StaleElementReferenceException)
+                        {
+                            // If the element reference becomes stale, re-find the element and retrieve the text again
+                            toastMessageElement = driver.FindElement(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message"));
+
+                            // Get the text within the div element
+                            string toastMessage = toastMessageElement.Text;
+
+                            // Use the captured message as needed
+                            Console.WriteLine("Toast Message: " + toastMessage);
                         }
 
 
 
-
                     }
-                    catch (StaleElementReferenceException)
-                    {
-                        // If the element reference becomes stale, re-find the element and retrieve the text again
-                        toastMessageElement = driver.FindElement(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message"));
-
-                        // Get the text within the div element
-                        string toastMessage = toastMessageElement.Text;
-
-                        // Use the captured message as needed
-                        Console.WriteLine("Toast Message: " + toastMessage);
-                    }
-
-
 
                 }
-
-
             }
             catch (Exception ex)
             {
