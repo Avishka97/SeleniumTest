@@ -271,51 +271,121 @@ namespace SeleniumTest
             // Wait for the next page to load (you may need to adjust the timing)
             wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
 
-            // Find and interact with the <a> element
-            IWebElement userManagementLink = driver.FindElement(By.CssSelector("a[href='#submenu1'][data-toggle='collapse']"));
 
-            // Perform actions on the element, for example, click
-            userManagementLink.Click();
+            //// Find and interact with the <a> element
+            //IWebElement userManagementLink = new WebDriverWait(driver, TimeSpan.FromSeconds(20))
+            //    .Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[href='#submenu1'][data-toggle='collapse']")));
 
-            WebDriverWait wait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-            wait1.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[routerlink='/usermgt/createUser'][routerlinkactive='active']")));
+            //// Perform actions on the element, for example, click
+            //userManagementLink.Click();
 
-            // Find and interact with the <a> element
-            IWebElement createUserLink = driver.FindElement(By.CssSelector("a[routerlink='/usermgt/createUser'][routerlinkactive='active']"));
+            // Define the base username
+            string baseUsername = "Avishka";
 
-            // Perform actions on the element, for example, click
-            createUserLink.Click();
+            // Initialize a counter
+            int counter = 98;
 
-            //Creating a User
+            bool userAdded = false;
+
+            while (!userAdded)
+            {
+
+
+                // Create a WebDriverWait instance
+                WebDriverWait wait7 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+                // Find the menu element with a waiting strategy
+                IWebElement menu = wait7.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[href='#submenu1'][data-toggle='collapse']")));
+
+                // Check if the menu is expanded or collapsed
+                string ariaExpandedAttributeValue = menu.GetAttribute("aria-expanded");
+
+                if (ariaExpandedAttributeValue.Equals("true"))
+                {
+                    // Menu is expanded, no action needed
+                    Console.WriteLine("Menu is already expanded");
+                }
+                else
+                {
+                    // Menu is collapsed, click to expand
+                    menu.Click();
+                }
+
+                // Find the <a> element for viewing users
+                IWebElement viewUserLink = new WebDriverWait(driver, TimeSpan.FromSeconds(20))
+                    .Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[routerlink='/usermgt/viewUsers'][routerlinkactive='active']")));
+
+                if (viewUserLink != null)
+                {
+                    // Click on the link to view users if it's clickable
+                    viewUserLink.Click();
+                }
+                else
+                {
+                    // Handle the situation where the link is not clickable
+                    Console.WriteLine("View User link is not clickable.");
+                    // You can add further actions or error handling here if needed
+                }
+
+
+                // Create a WebDriverWait instance
+                WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+                // Find the menu element with a waiting strategy
+                IWebElement menu1 = wait8.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[href='#submenu1'][data-toggle='collapse']")));
+
+                // Check if the menu is expanded or collapsed
+                string ariaExpandedAttributeValue1 = menu1.GetAttribute("aria-expanded");
+
+                if (ariaExpandedAttributeValue1.Equals("true"))
+                {
+                    // Menu is expanded, no action needed
+                    Console.WriteLine("Menu is already expanded");
+                }
+                else
+                {
+                    // Menu is collapsed, click to expand
+                    menu1.Click();
+                }
+
+
+                // Find the <a> element for user creation
+                IWebElement createUserLink = new WebDriverWait(driver, TimeSpan.FromSeconds(20))
+                    .Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[routerlink='/usermgt/createUser'][routerlinkactive='active']")));
+
+                if (createUserLink != null)
+                {
+                    // Click on the user creation link if it's clickable
+                    createUserLink.Click();
+                }
+                else
+                {
+                    // Handle the situation where the link is not clickable
+                    Console.WriteLine("Create User link is not clickable.");
+                    // You can add further actions or error handling here if needed
+                }
+
+                //Creating a User
                 // Wait for the form to load
                 WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 wait2.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".card-body")));
 
-            try
-            {
-                // Define the base username
-                string baseUsername = "Avishka";
+                try
+                {                    
+                    // Create the next username by appending the counter
+                    string nextUsername = baseUsername + counter;
 
-                // Initialize a counter
-                int counter = 98;
+                    // Insert values into the form
+                    InsertSalutation(driver, "Mr");
+                    InsertUsername(driver, nextUsername);
+                    InsertFirstName(driver, "Avishka");
+                    InsertLastName(driver, "BoardPAC");
+                    InsertPrimaryEmail(driver, "avishkalaki@hotmail.com");
+                    InsertDeviceDisplayName(driver, "AvishkaBoardPAC");
+                    InsertUserType(driver, "Organizer");
 
-                // Create the next username by appending the counter
-                string nextUsername = baseUsername + counter;
 
-                // Insert values into the form
-                InsertSalutation(driver, "Mr");
-                InsertUsername(driver, nextUsername);
-                InsertFirstName(driver, "Avishka");
-                InsertLastName(driver, "BoardPAC");
-                InsertPrimaryEmail(driver, "avishkalaki@hotmail.com");
-                InsertDeviceDisplayName(driver, "AvishkaBoardPAC");
-                InsertUserType(driver, "Organizer");
 
-                
-                bool userAdded = false;
-
-                while (!userAdded)
-                {
 
                     // Click the submit button (assuming it's initially disabled)
                     IWebElement submitButton = driver.FindElement(By.Id("submitBtn"));
@@ -328,11 +398,15 @@ namespace SeleniumTest
 
                         try
                         {
+                            // Create a WebDriverWait instance
+                            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
                             // Find the div element containing the toast message
-                            toastMessageElement = driver.FindElement(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message"));
+                            toastMessageElement = wait5.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
 
                             // Get the text within the div element
                             string toastMessage = toastMessageElement.Text;
+
 
                             // Use the captured message as needed
                             Console.WriteLine("Toast Message: " + toastMessage);
@@ -340,49 +414,8 @@ namespace SeleniumTest
 
                             if (toastMessage.Contains("User name " + nextUsername + " is already taken."))
                             {
-
-                                // Find and interact with the <a> element
-                                IWebElement userManagementLink1 = driver.FindElement(By.CssSelector("a[href='#submenu1'][data-toggle='collapse']"));
-
-                                // Perform actions on the element, for example, click
-                                userManagementLink1.Click();
-
-
-                                // Find and interact with the <a> element
-                                IWebElement viewUserLink1 = driver.FindElement(By.CssSelector("a[routerlink='/usermgt/viewUsers'][routerlinkactive='active']"));
-
-                                // Perform actions on the element, for example, click
-                                viewUserLink1.Click();
-
-                                // Find and interact with the <a> element
-                                IWebElement createUserLink1 = driver.FindElement(By.CssSelector("a[routerlink='/usermgt/createUser'][routerlinkactive='active']"));
-
-                                // Perform actions on the element, for example, click
-                                createUserLink1.Click();
-
                                 // Increment the counter for the next username
-                                counter++;
-
-                                // Create the next username by appending the counter
-                                nextUsername = baseUsername + counter;
-
-                                // Insert values into the form
-                                InsertSalutation(driver, "Mr");
-                                InsertUsername(driver, nextUsername);
-                                InsertFirstName(driver, "Avishka");
-                                InsertLastName(driver, "BoardPAC");
-                                InsertPrimaryEmail(driver, "avishkalaki@hotmail.com");
-                                InsertDeviceDisplayName(driver, "AvishkaBoardPAC");
-                                InsertUserType(driver, "Organizer");
-
-                                // You can add similar calls for other form fields
-
-                                // Click the submit button (assuming it's initially disabled)
-                                IWebElement submitButton1 = driver.FindElement(By.Id("submitBtn"));
-                                if (submitButton1.Enabled)
-                                {
-                                    submitButton1.Click();
-                                }
+                                counter++;                                
 
                             }
                             else
@@ -399,6 +432,7 @@ namespace SeleniumTest
                         }
                         catch (StaleElementReferenceException)
                         {
+                                                       
                             // If the element reference becomes stale, re-find the element and retrieve the text again
                             toastMessageElement = driver.FindElement(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message"));
 
@@ -413,16 +447,18 @@ namespace SeleniumTest
 
                     }
 
+
+                }
+                catch (Exception ex)
+                {
+                    // Handle other exceptions or rethrow the exception
+                    throw;
                 }
             }
-            catch (Exception ex)
-            {
-                // Handle other exceptions or rethrow the exception
-                throw;
-            }
 
+            WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace "expectedPage" with part of the URL of the next page
+            wait3.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace "expectedPage" with part of the URL of the next page
 
 
             // Wait for the next page to load (you may need to adjust the timing)
