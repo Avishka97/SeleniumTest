@@ -276,7 +276,7 @@ namespace SeleniumTest
             string baseUsername = "Avishka";
 
             // Initialize a counter
-            int counter = 98;
+            int counter = 103;
 
             bool userAdded = false;
 
@@ -431,6 +431,12 @@ namespace SeleniumTest
 
                             // Use the captured message as needed
                             Console.WriteLine("Toast Message: " + toastMessage);
+
+                            // Wait for the next page to load (you may need to adjust the timing)
+                            Thread.Sleep(1000);
+
+                            // Close the browser
+                            driver.Quit();
                         }
 
 
@@ -540,6 +546,8 @@ namespace SeleniumTest
             WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
             wait2.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".card-body")));
 
+            Thread.Sleep(500);
+
             // Set up an explicit wait with a timeout of 30 seconds
             WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
@@ -568,11 +576,14 @@ namespace SeleniumTest
             // Click the edit button
             editButton.Click();
 
+            Thread.Sleep(500);
+
             // Wait for the URL to match the expected pattern
             wait4.Until(driver => driver.Url.StartsWith("https://azuredevops.boardpaconline.com/WebClient/usermgt/updateuser"));
 
+            Thread.Sleep(1000);
             // Perform other actions after the URL matches the pattern...
-            InsertDeviceDisplayName(driver, "AvishkaBoardPACnew");
+            InsertDeviceDisplayName(driver, "BoardPACTest1");
             Thread.Sleep(1000);
 
             // Click the submit button (assuming it's initially disabled)
@@ -614,13 +625,19 @@ namespace SeleniumTest
                         // Wait for the next page to load (you may need to adjust the timing)
                         Thread.Sleep(1000);
 
-                        //// Close the browser
-                        //driver.Quit();
+                        // Close the browser
+                        driver.Quit();
 
                     }
                     else
                     {
                         Console.WriteLine("Toast Message: " + toastMessage);
+
+                        // Wait for the next page to load (you may need to adjust the timing)
+                        Thread.Sleep(1000);
+
+                        // Close the browser
+                        driver.Quit();
 
                     }
                 }
@@ -635,6 +652,12 @@ namespace SeleniumTest
 
                     // Use the captured message as needed
                     Console.WriteLine("Toast Message: " + toastMessage);
+
+                    // Wait for the next page to load (you may need to adjust the timing)
+                    Thread.Sleep(1000);
+
+                    // Close the browser
+                    driver.Quit();
                 }
 
             }
