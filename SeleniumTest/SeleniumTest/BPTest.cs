@@ -10,6 +10,7 @@ using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SeleniumExtras.WaitHelpers;
 using OpenQA.Selenium.Interactions;
+using System.Diagnostics.Metrics;
 
 
 namespace SeleniumTest
@@ -271,14 +272,6 @@ namespace SeleniumTest
             // Wait for the next page to load (you may need to adjust the timing)
             wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
 
-
-            //// Find and interact with the <a> element
-            //IWebElement userManagementLink = new WebDriverWait(driver, TimeSpan.FromSeconds(20))
-            //    .Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[href='#submenu1'][data-toggle='collapse']")));
-
-            //// Perform actions on the element, for example, click
-            //userManagementLink.Click();
-
             // Define the base username
             string baseUsername = "Avishka";
 
@@ -464,6 +457,187 @@ namespace SeleniumTest
             // Close the browser
             driver.Quit();
 
+        }
+
+        [TestMethod]
+        public void D_2_BoardadminUserUpdate()
+        {
+            // URL of the login page
+            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+
+            // Credentials for login
+            string username = "boardadmin";
+            string password = "123";
+
+            // Initialize Chrome Driver
+            var chromeOptions = new ChromeOptions();
+            //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
+            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            // Open the login page
+            driver.Navigate().GoToUrl(loginUrl);
+
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600); // Set page load timeout to 30 seconds (example)
+
+            // Wait for the username field to be present
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
+
+            // Find the password input field and login button
+            IWebElement passwordField = driver.FindElement(By.Id("password"));
+            IWebElement loginButton = driver.FindElement(By.Id("loginBtn"));
+
+            // Input the username and password
+            usernameField.SendKeys(username);
+            passwordField.SendKeys(password);
+
+            // Perform the login action
+            loginButton.Click();
+
+            // Wait for the next page to load (you may need to adjust the timing)
+            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+
+            // Create a WebDriverWait instance
+            WebDriverWait wait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the menu element with a waiting strategy
+            IWebElement menu = wait1.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[href='#submenu1'][data-toggle='collapse']")));
+
+            // Check if the menu is expanded or collapsed
+            string ariaExpandedAttributeValue = menu.GetAttribute("aria-expanded");
+
+            if (ariaExpandedAttributeValue.Equals("true"))
+            {
+                // Menu is expanded, no action needed
+                Console.WriteLine("Menu is already expanded");
+            }
+            else
+            {
+                // Menu is collapsed, click to expand
+                menu.Click();
+            }
+
+            // Find the <a> element for viewing users
+            IWebElement viewUserLink = new WebDriverWait(driver, TimeSpan.FromSeconds(30))
+                .Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[routerlink='/usermgt/viewUsers'][routerlinkactive='active']")));
+
+            if (viewUserLink != null)
+            {
+                // Click on the link to view users if it's clickable
+                viewUserLink.Click();
+            }
+            else
+            {
+                // Handle the situation where the link is not clickable
+                Console.WriteLine("View User link is not clickable.");
+                // You can add further actions or error handling here if needed
+            }
+
+            //Creating a User
+            // Wait for the form to load
+            WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait2.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".card-body")));
+
+            // Set up an explicit wait with a timeout of 30 seconds
+            WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Wait for the dropdown element to be present, visible, and clickable in the DOM
+            IWebElement statusDropdown = wait3.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("select.filter-by-status")));
+
+            // Using SelectElement to handle the dropdown
+            SelectElement dropdown = new SelectElement(statusDropdown);
+
+            // Selecting "Active" status by its value
+            dropdown.SelectByValue("2");
+
+            // Set up WebDriverWait
+            WebDriverWait wait4 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            By tableSelector = By.CssSelector(".ui-table-tbody");
+
+            // Wait for the table body element to be visible
+            IWebElement tableBody = wait4.Until(ExpectedConditions.ElementIsVisible(tableSelector));
+
+            // Find the first row of the table within the table body
+            IWebElement firstRow = tableBody.FindElement(By.CssSelector("tr"));
+
+            // Find the edit button in the first row
+            IWebElement editButton = wait4.Until(ExpectedConditions.ElementToBeClickable(firstRow.FindElement(By.CssSelector(".edit-icon-btn"))));
+
+            // Click the edit button
+            editButton.Click();
+
+            // Wait for the URL to match the expected pattern
+            wait4.Until(driver => driver.Url.StartsWith("https://azuredevops.boardpaconline.com/WebClient/usermgt/updateuser"));
+
+            // Perform other actions after the URL matches the pattern...
+            InsertDeviceDisplayName(driver, "AvishkaBoardPACnew");
+            Thread.Sleep(1000);
+
+            // Click the submit button (assuming it's initially disabled)
+            IWebElement submitButton = driver.FindElement(By.Id("submitBtn"));
+            if (submitButton.Enabled)
+            {
+                submitButton.Click();
+
+                Thread.Sleep(500);
+
+                IWebElement toastMessageElement = null;
+
+                try
+                {
+                    // Create a WebDriverWait instance
+                    WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+                    // Find the div element containing the toast message
+                    toastMessageElement = wait5.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
+
+                    // Get the text within the div element
+                    string toastMessage = toastMessageElement.Text;
+
+
+                    // Use the captured message as needed
+                    Console.WriteLine("Toast Message: " + toastMessage);
+
+                    string targetString = "user is successfully updated.";
+
+
+                    if (toastMessage.IndexOf(targetString, StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        Console.WriteLine("Toast Message contains: " + targetString);
+                        WebDriverWait wait6 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                        // Wait for the next page to load (you may need to adjust the timing)
+                        wait6.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace "expectedPage" with part of the URL of the next page
+
+
+                        // Wait for the next page to load (you may need to adjust the timing)
+                        Thread.Sleep(1000);
+
+                        //// Close the browser
+                        //driver.Quit();
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Toast Message: " + toastMessage);
+
+                    }
+                }
+                catch (StaleElementReferenceException)
+                {
+
+                    // If the element reference becomes stale, re-find the element and retrieve the text again
+                    toastMessageElement = driver.FindElement(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message"));
+
+                    // Get the text within the div element
+                    string toastMessage = toastMessageElement.Text;
+
+                    // Use the captured message as needed
+                    Console.WriteLine("Toast Message: " + toastMessage);
+                }
+
+            }
         }
 
         static void InsertSalutation(IWebDriver driver, string salutation)
