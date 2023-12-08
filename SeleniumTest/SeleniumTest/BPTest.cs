@@ -874,7 +874,7 @@ namespace SeleniumTest
             // Wait for the URL to match the expected pattern
             wait7.Until(driver => driver.Url.StartsWith("https://azuredevops.boardpaconline.com/WebClient/privilegemgt/privilegemgt"));
 
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
 
 
         }
