@@ -20,7 +20,7 @@ namespace SeleniumTest
     {      
 
         [TestMethod]
-        public void A_SysadminLogin()
+        public void A_0_SysadminLogin()
         {
 
             // URL of the login page
@@ -63,7 +63,7 @@ namespace SeleniumTest
         }
 
         [TestMethod]
-        public void B_SysadminChecking()
+        public void A_1_SysadminChecking()
         {
 
             // URL of the login page
@@ -126,7 +126,7 @@ namespace SeleniumTest
         }
 
         [TestMethod]
-        public void C_BoardadminLogin()
+        public void B_0_BoardadminLogin()
         {
 
             // URL of the login page
@@ -169,7 +169,7 @@ namespace SeleniumTest
         }
 
         [TestMethod]
-        public void D_0_BoardadminChecking()
+        public void B_1_BoardadminChecking()
         {
 
             // URL of the login page
@@ -232,7 +232,7 @@ namespace SeleniumTest
         }
 
         [TestMethod]
-        public void D_1_BoardadminUserCreating()
+        public void B_2_BoardadminUserCreating()
         {
 
             // URL of the login page
@@ -466,7 +466,7 @@ namespace SeleniumTest
         }
 
         [TestMethod]
-        public void D_2_BoardadminUserUpdate()
+        public void B_3_BoardadminUserUpdate()
         {
             // URL of the login page
             string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
@@ -663,6 +663,224 @@ namespace SeleniumTest
             }
         }
 
+        [TestMethod]
+        public void B_4_BoardadminCreateCommittee()
+        {
+
+            string formattedDate = GetCurrentFormattedDate();
+
+            // URL of the login page
+            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+
+            // Credentials for login
+            string username = "boardadmin";
+            string password = "123";
+
+            // Initialize Chrome Driver
+            var chromeOptions = new ChromeOptions();
+            //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
+            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            // Open the login page
+            driver.Navigate().GoToUrl(loginUrl);
+
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600); // Set page load timeout to 30 seconds (example)
+
+            // Wait for the username field to be present
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
+
+            // Find the password input field and login button
+            IWebElement passwordField = driver.FindElement(By.Id("password"));
+            IWebElement loginButton = driver.FindElement(By.Id("loginBtn"));
+
+            // Input the username and password
+            usernameField.SendKeys(username);
+            passwordField.SendKeys(password);
+
+            // Perform the login action
+            loginButton.Click();
+
+            // Wait for the next page to load (you may need to adjust the timing)
+            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+
+            // Find the <a> element for user creation
+            IWebElement createCommitteeLink = new WebDriverWait(driver, TimeSpan.FromSeconds(30))
+                .Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[routerlink='/committeemgt/committees'][routerlinkactive='active']")));
+
+            if (createCommitteeLink != null)
+            {
+                // Click on the user creation link if it's clickable
+                createCommitteeLink.Click();
+            }
+            else
+            {
+                // Handle the situation where the link is not clickable
+                Console.WriteLine("Create User link is not clickable.");
+                // You can add further actions or error handling here if needed
+            }
+
+            // Set up a WebDriverWait
+            WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Wait for the button to be clickable
+            IWebElement button = wait2.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("//div[@title='Click to Create a committee']//button[contains(., 'Create Committee')]")));
+
+            // Click the button
+            button.Click();
+
+            // Wait for the dialog window to appear
+            WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait3.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.XPath("//span[text()='Add Committee']")));
+
+
+            // Initialize a counter
+            int counter = 15;
+
+            bool userAdded = false;
+
+            while (!userAdded)
+            {
+                // Find input fields for Committee Name and Device Display Name
+                IWebElement committeeNameInput = driver.FindElement(By.Id("committeeNameId"));
+                IWebElement deviceDisplayNameInput = driver.FindElement(By.Id("committeeDeviceDisplayNameId"));                
+
+                // Enter text into the fields
+                committeeNameInput.SendKeys("BPCommittee" + formattedDate+"_"+counter);
+                deviceDisplayNameInput.SendKeys("BP" + formattedDate);
+
+                // Wait for the next page to load (you may need to adjust the timing)
+                Thread.Sleep(500);
+
+                IWebElement saveButton = driver.FindElement(By.Id("addComBtn"));
+                if (saveButton.Enabled)
+                {
+                    saveButton.Click();
+                    userAdded = true;
+                    Thread.Sleep(500);
+                    
+                }
+                else
+                {
+                    committeeNameInput.Clear();
+                    deviceDisplayNameInput.Clear();
+                    counter++;
+                    Thread.Sleep(500);
+                    
+                }
+
+            }
+
+            string targetCommitteeName = "BPCommittee" + formattedDate + "_" + counter;
+
+            Thread.Sleep(500);
+
+            // Wait for the search icon to be clickable
+            WebDriverWait wait6 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            IWebElement searchIcon = wait6.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("span.btn.btn-default.input-group-addon.m-d-none")));
+
+            // Click on the search icon to activate the search field
+            searchIcon.Click();
+
+            // Find the search input field and input the committee name to search for
+            IWebElement searchInput = wait6.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("input[type='text']"))); // Replace with your specific input selector
+
+            // Replace 'BPCommittee12082023' with the committee name you want to search
+            string committeeName = targetCommitteeName;
+            searchInput.SendKeys(committeeName);
+
+            // Press Enter to perform the search
+            searchInput.SendKeys(Keys.Enter);
+
+            Thread.Sleep(500);
+
+            WebDriverWait wait4 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));     
+
+            // Wait for the table to be visible
+            IWebElement table = wait4.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("p-table[datakey='id']")));
+
+            // Find the committee name that matches 'BPCommittee12082023'
+            IWebElement matchingRow = wait4.Until(ExpectedConditions.ElementExists(By.XPath($"//span[text()='{targetCommitteeName}']/ancestor::tr")));
+
+            // Click the plus sign or add subcommittee button in the same row
+            IWebElement addButton = wait4.Until(ExpectedConditions.ElementToBeClickable(matchingRow.FindElement(By.CssSelector("button[icon='pi pi-plus-circle']"))));
+            addButton.Click();
+
+            // Initialize a counter
+            int counter1 = 0;
+
+            bool userAdded1 = false;
+
+            while (!userAdded1)
+            {
+                // Find input fields for Committee Name and Device Display Name
+                IWebElement committeeNameInput1 = driver.FindElement(By.Id("committeeNameId"));
+                IWebElement deviceDisplayNameInput1 = driver.FindElement(By.Id("committeeDeviceDisplayNameId"));
+
+                // Enter text into the fields
+                committeeNameInput1.SendKeys("BPSubCommittee" + formattedDate + "_" + counter1);
+                deviceDisplayNameInput1.SendKeys("BP" + formattedDate);
+
+                // Wait for the next page to load (you may need to adjust the timing)
+                Thread.Sleep(500);
+
+                IWebElement saveButton1 = driver.FindElement(By.Id("addSubcomBtn"));
+                if (saveButton1.Enabled)
+                {
+                    saveButton1.Click();
+                    userAdded1 = true;
+                    Thread.Sleep(500);
+
+                }
+                else
+                {
+                    committeeNameInput1.Clear();
+                    deviceDisplayNameInput1.Clear();
+                    counter1++;
+                    Thread.Sleep(500);
+
+                }
+
+            }
+
+            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            string targetCommitteeName1 = "BPCommittee" + formattedDate + "_" + counter;
+            string targetSubcommitteeName1 = "BPSubCommittee" + formattedDate + "_" + counter1;
+
+            Thread.Sleep(500);
+
+            WebDriverWait wait7 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+            // Find the Committee with name BPCommittee12092023_10
+            IWebElement committee = wait7.Until(ExpectedConditions.ElementExists(By.XPath("//a[contains(., '"+targetCommitteeName1+"')]")));
+            committee.Click();
+
+            // Find the Subcommittee with name BPSubCommittee12092023_0
+            IWebElement subcommittee = wait7.Until(ExpectedConditions.ElementExists(By.XPath("//td[contains(., '"+targetSubcommitteeName1+ "')]")));
+
+            // Find the parent <tr> element of the subcommittee
+            IWebElement subcommitteeRow = subcommittee.FindElement(By.XPath("./ancestor::tr"));
+
+            // Find the "Assign Roles" button within the subcommittee row
+            IWebElement assignRolesButton = subcommitteeRow.FindElement(By.CssSelector(".add-role-icon-btn"));
+
+            Thread.Sleep(500);
+
+            assignRolesButton.Click();
+
+            // Wait for the URL to match the expected pattern
+            wait7.Until(driver => driver.Url.StartsWith("https://azuredevops.boardpaconline.com/WebClient/privilegemgt/privilegemgt"));
+
+            Thread.Sleep(1000);
+
+
+        }
+
+
+
         static void InsertSalutation(IWebDriver driver, string salutation)
         {
 
@@ -723,6 +941,19 @@ namespace SeleniumTest
             IWebElement userTypeDropdown = driver.FindElement(By.Id("userType"));
             var selectElement = new SelectElement(userTypeDropdown);
             selectElement.SelectByText(userType);
+        }
+
+        static string GetCurrentFormattedDate()
+        {
+            // Get the current date
+            DateTime currentDate = DateTime.Now;
+
+            // Format the date as MMddyyyy (12082024 format)
+            string formattedDate = currentDate.ToString("MMddyyyy");
+
+            Console.WriteLine("Formatted Date: " + formattedDate);
+
+            return formattedDate;
         }
 
         //static void InsertMobileNumber(IWebDriver driver, string mobileNumber)
