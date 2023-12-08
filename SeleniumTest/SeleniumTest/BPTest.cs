@@ -289,10 +289,12 @@ namespace SeleniumTest
 
             while (!userAdded)
             {
+                // Wait for the next page to load (you may need to adjust the timing)
+                Thread.Sleep(4000);
 
 
                 // Create a WebDriverWait instance
-                WebDriverWait wait7 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                WebDriverWait wait7 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
                 // Find the menu element with a waiting strategy
                 IWebElement menu = wait7.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[href='#submenu1'][data-toggle='collapse']")));
@@ -312,7 +314,7 @@ namespace SeleniumTest
                 }
 
                 // Find the <a> element for viewing users
-                IWebElement viewUserLink = new WebDriverWait(driver, TimeSpan.FromSeconds(20))
+                IWebElement viewUserLink = new WebDriverWait(driver, TimeSpan.FromSeconds(30))
                     .Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[routerlink='/usermgt/viewUsers'][routerlinkactive='active']")));
 
                 if (viewUserLink != null)
@@ -329,7 +331,7 @@ namespace SeleniumTest
 
 
                 // Create a WebDriverWait instance
-                WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
                 // Find the menu element with a waiting strategy
                 IWebElement menu1 = wait8.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[href='#submenu1'][data-toggle='collapse']")));
@@ -350,7 +352,7 @@ namespace SeleniumTest
 
 
                 // Find the <a> element for user creation
-                IWebElement createUserLink = new WebDriverWait(driver, TimeSpan.FromSeconds(20))
+                IWebElement createUserLink = new WebDriverWait(driver, TimeSpan.FromSeconds(30))
                     .Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[routerlink='/usermgt/createUser'][routerlinkactive='active']")));
 
                 if (createUserLink != null)
@@ -399,7 +401,7 @@ namespace SeleniumTest
                         try
                         {
                             // Create a WebDriverWait instance
-                            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
                             // Find the div element containing the toast message
                             toastMessageElement = wait5.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
@@ -420,12 +422,7 @@ namespace SeleniumTest
                             }
                             else
                             {
-                                userAdded = true;
-                                //// Handle other situations or proceed to the next page
-                                //wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace with the expected URL
-
-                                //// Close the browser
-                                //driver.Quit();
+                                userAdded = true;                                
 
                             }
 
@@ -456,7 +453,7 @@ namespace SeleniumTest
                 }
             }
 
-            WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
             // Wait for the next page to load (you may need to adjust the timing)
             wait3.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace "expectedPage" with part of the URL of the next page
 
