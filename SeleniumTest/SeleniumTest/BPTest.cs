@@ -57,6 +57,7 @@ namespace SeleniumTest
             wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
 
             // You can add further actions after successful login here
+            Thread.Sleep(1000);
 
             // Close the browser
             driver.Quit();
@@ -99,18 +100,40 @@ namespace SeleniumTest
             // Wait for the next page to load (you may need to adjust the timing)
             wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
 
+            Thread.Sleep(500);
             // Find and click on the menu item
             IWebElement menuItem = driver.FindElement(By.CssSelector("a[routerlink='/settings/sysadminsettings']"));
             menuItem.Click();
+
+            Thread.Sleep(500);
 
             // Find and click on the menu item inside the tab
             WebDriverWait wait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
             IWebElement securityMenuItem = wait1.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("a[data-toggle='tab'][href='#security-settings']")));
             securityMenuItem.Click();
 
+            Thread.Sleep(500);
+
             // Find and click on the "Save" button
             IWebElement saveButton = driver.FindElement(By.CssSelector("button.btn.btn-primary-submit"));
             saveButton.Click();
+
+            IWebElement toastMessageElement1 = null;
+            // Create a WebDriverWait instance
+            WebDriverWait wait11 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the div element containing the toast message
+            toastMessageElement1 = wait11.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
+
+            // Get the text within the div element
+            string toastMessage = toastMessageElement1.Text;
+
+
+            // Use the captured message as needed
+            Console.WriteLine("Toast Message2: " + toastMessage);
+
+
+            Thread.Sleep(1000);
 
             // Find and click on the "Logout" button  
             IWebElement logoutButton = driver.FindElement(By.CssSelector("li.nav-item.logged-in-ic-wrapper"));
@@ -163,6 +186,7 @@ namespace SeleniumTest
             wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
 
             // You can add further actions after successful login here
+            Thread.Sleep(1000);
 
             // Close the browser
             driver.Quit();
@@ -205,18 +229,42 @@ namespace SeleniumTest
             // Wait for the next page to load (you may need to adjust the timing)
             wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
 
+            Thread.Sleep(500);
+
             // Find and click on the menu item
             IWebElement menuItem = driver.FindElement(By.CssSelector("a[routerlink='/settings/boardadminsettings']"));
             menuItem.Click();
+
+            Thread.Sleep(500);
 
             // Find and click on the menu item inside the tab
             WebDriverWait wait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
             IWebElement securityMenuItem = wait1.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("a[data-toggle='tab'][href='#meeting-settings']")));
             securityMenuItem.Click();
 
+            Thread.Sleep(500);
+
             // Find and click on the "Save" button
             IWebElement saveButton = driver.FindElement(By.CssSelector("button.btn.btn-primary-submit"));
             saveButton.Click();
+
+            Thread.Sleep(500);
+
+            IWebElement toastMessageElement1 = null;
+            // Create a WebDriverWait instance
+            WebDriverWait wait11 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the div element containing the toast message
+            toastMessageElement1 = wait11.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
+
+            // Get the text within the div element
+            string toastMessage = toastMessageElement1.Text;
+            
+            // Use the captured message as needed
+            Console.WriteLine("Toast Message2: " + toastMessage);
+
+            // Wait for the next page to load (you may need to adjust the timing)
+            Thread.Sleep(1000);
 
             // Find and click on the "Logout" button  
             IWebElement logoutButton = driver.FindElement(By.CssSelector("li.nav-item.logged-in-ic-wrapper"));
@@ -585,6 +633,8 @@ namespace SeleniumTest
             // Perform other actions after the URL matches the pattern...
             InsertDeviceDisplayName(driver, "BoardPACTest1");
             Thread.Sleep(1000);
+            InsertLastName(driver, "BoardPACNew");
+            Thread.Sleep(1000);
 
             // Click the submit button (assuming it's initially disabled)
             IWebElement submitButton = driver.FindElement(By.Id("submitBtn"));
@@ -875,6 +925,107 @@ namespace SeleniumTest
             wait7.Until(driver => driver.Url.StartsWith("https://azuredevops.boardpaconline.com/WebClient/privilegemgt/privilegemgt"));
 
             Thread.Sleep(2000);
+
+            // Replace with your element ID or appropriate selector
+            var dropdownElement = driver.FindElement(By.Id("selectedRole"));
+
+            // Click the dropdown to open options
+            dropdownElement.Click();
+
+            Thread.Sleep(500);
+
+            // Find and select the desired option by text
+            var optionToSelect = "Board Secretary"; // Replace with the text of the option you want to select
+            var dropdownOptions = driver.FindElements(By.CssSelector(".ui-dropdown-item"));
+
+            foreach (var option in dropdownOptions)
+            {
+                if (option.Text.Trim() == optionToSelect)
+                {
+                    option.Click();
+                }
+            }
+
+            // Replace with your element ID or appropriate selector
+            var dropdownElement1 = driver.FindElement(By.Id("selectedUsers"));
+
+            // Click the dropdown to open options
+            dropdownElement1.Click();
+
+            Thread.Sleep(1000);
+
+            // Replace with appropriate selectors
+            var searchInput1 = driver.FindElement(By.CssSelector(".ui-multiselect-filter-container input[type='text']"));
+            var dropdownItems1 = driver.FindElements(By.CssSelector(".ui-multiselect-item"));
+
+            // Enter text into the search input
+            searchInput1.SendKeys("Avishka");
+
+            string FnameLname = "Avishka BoardPACNew";
+
+            Thread.Sleep(1000);
+
+            // Wait for the options to filter based on search
+            WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait8.Until(ExpectedConditions.ElementExists(By.CssSelector(".ui-multiselect-item[aria-label='"+FnameLname+"']")));
+
+            // Find and select "Avishka BoardPAC" based on its label attribute
+            var avishkaBoardPac = driver.FindElement(By.CssSelector(".ui-multiselect-item[aria-label='"+FnameLname+"']"));
+            avishkaBoardPac.Click();
+
+            Thread.Sleep(500);
+
+            // Set up a WebDriverWait with a timeout of 10 seconds
+            WebDriverWait wait9 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            // Wait for the "Add" button to be clickable
+            IWebElement adduserButton = wait9.Until(ExpectedConditions.ElementToBeClickable(By.Id("addPriviledge")));
+
+            // Click the "Add" button
+            adduserButton.Click();
+
+            IWebElement toastMessageElement2 = null;
+            // Create a WebDriverWait instance
+            WebDriverWait wait12 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the div element containing the toast message
+            toastMessageElement2 = wait12.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
+
+            // Get the text within the div element
+            string toastMessage1 = toastMessageElement2.Text;
+
+            // Use the captured message as needed
+            Console.WriteLine("Toast Message1: " + toastMessage1);
+
+            Thread.Sleep(2000);
+
+            // Set up a WebDriverWait with a timeout of 10 seconds
+            WebDriverWait wait10 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Wait for the "Save" button to be clickable
+            IWebElement saveButton2 = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("button.btn.btn-primary-submit[type='button']")));
+
+            // Click the "Save" button
+            saveButton2.Click();
+            Thread.Sleep(500);
+
+            IWebElement toastMessageElement1 = null;
+            // Create a WebDriverWait instance
+            WebDriverWait wait11 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the div element containing the toast message
+            toastMessageElement1 = wait11.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
+
+            // Get the text within the div element
+            string toastMessage = toastMessageElement1.Text;
+
+
+            // Use the captured message as needed
+            Console.WriteLine("Toast Message2: " + toastMessage);
+
+            Thread.Sleep(1000);
+
+            // Close the browser
+            driver.Quit();
 
 
         }
