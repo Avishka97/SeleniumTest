@@ -352,6 +352,7 @@ namespace SeleniumTest
                 {
                     // Menu is collapsed, click to expand
                     menu.Click();
+                    Thread.Sleep(500);
                 }
 
                 // Find the <a> element for viewing users
@@ -362,6 +363,7 @@ namespace SeleniumTest
                 {
                     // Click on the link to view users if it's clickable
                     viewUserLink.Click();
+                    Thread.Sleep(500);
                 }
                 else
                 {
@@ -389,6 +391,7 @@ namespace SeleniumTest
                 {
                     // Menu is collapsed, click to expand
                     menu1.Click();
+                    Thread.Sleep(500);
                 }
 
 
@@ -400,6 +403,7 @@ namespace SeleniumTest
                 {
                     // Click on the user creation link if it's clickable
                     createUserLink.Click();
+                    Thread.Sleep(500);
                 }
                 else
                 {
@@ -410,7 +414,7 @@ namespace SeleniumTest
 
                 //Creating a User
                 // Wait for the form to load
-                WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                 wait2.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".card-body")));
 
                 try
@@ -427,7 +431,7 @@ namespace SeleniumTest
                     InsertDeviceDisplayName(driver, "AvishkaBoardPAC");
                     InsertUserType(driver, "Organizer");
 
-
+                    Thread.Sleep(500);
 
 
                     // Click the submit button (assuming it's initially disabled)
@@ -435,6 +439,7 @@ namespace SeleniumTest
                     if (submitButton.Enabled)
                     {
                         submitButton.Click();
+                        Thread.Sleep(500);
 
 
                         IWebElement toastMessageElement = null;
@@ -458,12 +463,13 @@ namespace SeleniumTest
                             if (toastMessage.Contains("User name " + nextUsername + " is already taken."))
                             {
                                 // Increment the counter for the next username
-                                counter++;                                
-
+                                counter++;
+                                Thread.Sleep(500);
                             }
                             else
                             {
-                                userAdded = true;                                
+                                userAdded = true;
+                                Thread.Sleep(500);
 
                             }
 
