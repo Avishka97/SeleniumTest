@@ -292,9 +292,11 @@ namespace SeleniumTest
 
             // Initialize Chrome Driver
             var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--headless");
             //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
             chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
             IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
             // Open the login page
