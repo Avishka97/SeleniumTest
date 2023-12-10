@@ -32,8 +32,10 @@ namespace SeleniumTest
 
             // Initialize Chrome Driver
             var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--headless");
             chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
             IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
@@ -76,8 +78,10 @@ namespace SeleniumTest
 
             // Initialize Chrome Driver
             var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--headless");
             chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
             IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
@@ -161,8 +165,10 @@ namespace SeleniumTest
 
             // Initialize Chrome Driver
             var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--headless");
             chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
             IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
@@ -205,8 +211,10 @@ namespace SeleniumTest
 
             // Initialize Chrome Driver
             var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--headless");
             chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
             IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
@@ -557,9 +565,11 @@ namespace SeleniumTest
 
             // Initialize Chrome Driver
             var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--headless");
             //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
             chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
             IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
             // Open the login page
@@ -760,10 +770,11 @@ namespace SeleniumTest
 
             // Initialize Chrome Driver
             var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--headless");
             //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
             chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
             IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-
+            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
@@ -1066,27 +1077,6 @@ namespace SeleniumTest
 
         static void InsertSalutation(IWebDriver driver, string salutation)
         {
-            //Console.WriteLine("Find the dropdown element with waiting");
-            //// Find the dropdown element with waiting
-            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(50));
-            //IWebElement dropdown = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='salutation']")));
-
-            //Console.WriteLine(" Click on the dropdown to open the options");
-            //// Click on the dropdown to open the options
-            //dropdown.Click();
-
-            //Thread.Sleep(500);
-            //Console.WriteLine(" Find the Mr option and click on it with waiting");
-            //// Find the "Mr" option and click on it with waiting
-            //IWebElement mrOption = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("//p-dropdownitem[.//span[text()='Mr']]")));
-            //mrOption.Click();
-
-            //Console.WriteLine("Find the text box and get the selected value with waiting");
-            //// Find the text box and get the selected value with waiting
-            //IWebElement textBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.CssSelector("p-dropdown[formcontrolname='salutation'] input")));
-            //string selectedValue = textBox.GetAttribute("value");
-
-            //Console.WriteLine("add the salutation");
 
             Console.WriteLine("Find the dropdown element with waiting");
             // Find the dropdown element with waiting
