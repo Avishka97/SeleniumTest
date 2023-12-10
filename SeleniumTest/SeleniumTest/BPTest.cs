@@ -417,6 +417,7 @@ namespace SeleniumTest
                 WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                 wait2.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".card-body")));
 
+                Thread.Sleep(500);
                 try
                 {                    
                     // Create the next username by appending the counter
@@ -424,14 +425,32 @@ namespace SeleniumTest
 
                     // Insert values into the form
                     InsertSalutation(driver, "Mr");
+
+                    Thread.Sleep(200);
+
                     InsertUsername(driver, nextUsername);
+
+                    Thread.Sleep(200);
+
                     InsertFirstName(driver, "Avishka");
+
+                    Thread.Sleep(200);
+
                     InsertLastName(driver, "BoardPAC");
+
+                    Thread.Sleep(200);
+
                     InsertPrimaryEmail(driver, "avishkalaki@hotmail.com");
+
+                    Thread.Sleep(200);
+
                     InsertDeviceDisplayName(driver, "AvishkaBoardPAC");
+
+                    Thread.Sleep(200);
+
                     InsertUserType(driver, "Organizer");
 
-                    Thread.Sleep(500);
+                    Thread.Sleep(200);
 
 
                     // Click the submit button (assuming it's initially disabled)
