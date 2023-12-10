@@ -346,12 +346,13 @@ namespace SeleniumTest
                 if (ariaExpandedAttributeValue.Equals("true"))
                 {
                     // Menu is expanded, no action needed
-                    Console.WriteLine("Menu is already expanded");
+                    Console.WriteLine("User Managment Main Menu is already expanded");
                 }
                 else
                 {
                     // Menu is collapsed, click to expand
                     menu.Click();
+                    Console.WriteLine("User Managment Main Menu clicked to expanded");
                     Thread.Sleep(500);
                 }
 
@@ -363,6 +364,7 @@ namespace SeleniumTest
                 {
                     // Click on the link to view users if it's clickable
                     viewUserLink.Click();
+                    Console.WriteLine("User View Menu clicked to expanded");
                     Thread.Sleep(500);
                 }
                 else
@@ -385,12 +387,13 @@ namespace SeleniumTest
                 if (ariaExpandedAttributeValue1.Equals("true"))
                 {
                     // Menu is expanded, no action needed
-                    Console.WriteLine("Menu is already expanded");
+                    Console.WriteLine("User Managment Main Menu is already expanded");
                 }
                 else
                 {
                     // Menu is collapsed, click to expand
                     menu1.Click();
+                    Console.WriteLine("User Managment Main Menu clicked to expanded");
                     Thread.Sleep(500);
                 }
 
@@ -403,6 +406,7 @@ namespace SeleniumTest
                 {
                     // Click on the user creation link if it's clickable
                     createUserLink.Click();
+                    Console.WriteLine("Create User Menu clicked to expanded");
                     Thread.Sleep(500);
                 }
                 else
@@ -1075,30 +1079,36 @@ namespace SeleniumTest
             IWebElement textBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.CssSelector("p-dropdown[formcontrolname='salutation'] input")));
             string selectedValue = textBox.GetAttribute("value");
 
+            Console.WriteLine("add the salutation");
+
         }
 
         static void InsertUsername(IWebDriver driver, string username)
         {
             IWebElement usernameInput = driver.FindElement(By.Id("userName"));
             usernameInput.SendKeys(username);
+            Console.WriteLine("add the username");
         }
 
         static void InsertFirstName(IWebDriver driver, string firstName)
         {
             IWebElement firstNameInput = driver.FindElement(By.Id("firstName"));
             firstNameInput.SendKeys(firstName);
+            Console.WriteLine("add the firstName");
         }
 
         static void InsertLastName(IWebDriver driver, string lastName)
         {
             IWebElement lastNameInput = driver.FindElement(By.Id("lastName"));
             lastNameInput.SendKeys(lastName);
+            Console.WriteLine("add the lastName");
         }
 
         static void InsertPrimaryEmail(IWebDriver driver, string primaryEmail)
         {
             IWebElement primaryEmailInput = driver.FindElement(By.Id("boardEmail"));
             primaryEmailInput.SendKeys(primaryEmail);
+            Console.WriteLine("add the primaryEmail");
         }
 
         static void InsertDeviceDisplayName(IWebDriver driver, string deviceDisplayName)
@@ -1110,6 +1120,8 @@ namespace SeleniumTest
 
             // Send the new value
             deviceDisplayNameInput.SendKeys(deviceDisplayName);
+
+            Console.WriteLine("add the deviceDisplayName");
         }
 
         static void InsertUserType(IWebDriver driver, string userType)
@@ -1117,6 +1129,7 @@ namespace SeleniumTest
             IWebElement userTypeDropdown = driver.FindElement(By.Id("userType"));
             var selectElement = new SelectElement(userTypeDropdown);
             selectElement.SelectByText(userType);
+            Console.WriteLine("add the userType");
         }
 
         static string GetCurrentFormattedDate()
