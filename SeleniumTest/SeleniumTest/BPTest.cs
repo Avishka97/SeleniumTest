@@ -1065,15 +1065,19 @@ namespace SeleniumTest
         {
 
             // Find the dropdown element with waiting
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(50));
             IWebElement dropdown = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='salutation']")));
 
             // Click on the dropdown to open the options
             dropdown.Click();
 
+            Thread.Sleep(500);
+
             // Find the "Mr" option and click on it with waiting
             IWebElement mrOption = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("//p-dropdownitem[.//span[text()='Mr']]")));
             mrOption.Click();
+
+            Thread.Sleep(500);
 
             // Find the text box and get the selected value with waiting
             IWebElement textBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.CssSelector("p-dropdown[formcontrolname='salutation'] input")));
