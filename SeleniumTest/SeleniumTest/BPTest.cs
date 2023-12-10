@@ -421,7 +421,7 @@ namespace SeleniumTest
                 WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(50));
                 wait2.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".card-body")));
 
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
                 try
                 {                    
                     // Create the next username by appending the counter
