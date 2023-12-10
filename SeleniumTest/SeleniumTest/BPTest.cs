@@ -1318,6 +1318,115 @@ namespace SeleniumTest
 
         }
 
+        [TestMethod]
+        public void C_2_OrganizerMeetingCreate()
+        {
+            // URL of the login page
+            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+
+            // Credentials for login
+            string username = "BPUser1";
+            string password = "123";
+
+            // Initialize Chrome Driver
+            var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            // Open the login page
+            driver.Navigate().GoToUrl(loginUrl);
+
+            // Wait for the username field to be present
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
+
+            // Find the password input field and login button
+            IWebElement passwordField = driver.FindElement(By.Id("password"));
+            IWebElement loginButton = driver.FindElement(By.Id("loginBtn"));
+
+            // Input the username and password
+            usernameField.SendKeys(username);
+            passwordField.SendKeys(password);
+
+            // Perform the login action
+            loginButton.Click();
+
+            // Wait for the next page to load (you may need to adjust the timing)
+            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+
+            Thread.Sleep(500);
+
+            // Create a WebDriverWait instance
+            WebDriverWait wait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the menu element with a waiting strategy
+            IWebElement menu = wait1.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[href='#submenu3'][data-toggle='collapse']")));
+
+            // Check if the menu is expanded or collapsed
+            string ariaExpandedAttributeValue = menu.GetAttribute("aria-expanded");
+
+            if (ariaExpandedAttributeValue.Equals("true"))
+            {
+                // Menu is expanded, no action needed
+                Console.WriteLine("Meeting Managment Main Menu is already expanded");
+            }
+            else
+            {
+                // Menu is collapsed, click to expand
+                menu.Click();
+                Console.WriteLine("Meeting Managment Main Menu clicked to expanded");
+                Thread.Sleep(500);
+            }
+
+            // Find the <a> element for viewing users
+            IWebElement viewUserLink = new WebDriverWait(driver, TimeSpan.FromSeconds(30))
+                .Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[routerlink='/meeting/createmeeting'][routerlinkactive='active']")));
+
+            if (viewUserLink != null)
+            {
+                // Click on the link to view users if it's clickable
+                viewUserLink.Click();
+                Console.WriteLine("Create Meeting clicked to expanded");
+                Thread.Sleep(500);
+            }
+            else
+            {
+                // Handle the situation where the link is not clickable
+                Console.WriteLine("Create Meeting link is not clickable.");
+                // You can add further actions or error handling here if needed
+            }
+
+
+            WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+            // Wait for the next page to load (you may need to adjust the timing)
+            wait2.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/meeting/createmeeting")); // Replace "expectedPage" with part of the URL of the next page
+
+            Thread.Sleep(1500);
+
+            WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            FillTitle(driver, wait3, "BPM12102023_0");
+
+            Thread.Sleep(500);
+
+            SelectCommittee(driver, wait3, "boardpactest");
+
+            Thread.Sleep(500);
+
+            SelectSubCommittee(driver, wait3, "boardpacsub");
+
+            Thread.Sleep(500);
+
+            FillOrganizer(driver, wait3, "BPUserOne BoardPAC");
+
+            Thread.Sleep(500);
+
+            FillDescription(driver, wait3, "Your Description");
+
+            Thread.Sleep(1500);
+
+        }
 
         static void InsertSalutation(IWebDriver driver, string salutation)
         {
@@ -1435,6 +1544,40 @@ namespace SeleniumTest
         //    IWebElement officeNumberInput = driver.FindElement(By.Id("officeNumber"));
         //    officeNumberInput.SendKeys(officeNumber);
         //}
+
+        static void FillTitle(IWebDriver driver, WebDriverWait wait, string title)
+        {
+            IWebElement titleInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input#title")));
+            titleInput.SendKeys(title);
+        }
+
+        static void SelectCommittee(IWebDriver driver, WebDriverWait wait, string committeeName)
+        {
+            IWebElement committeeDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("select#committee")));
+            SelectElement committeeSelect = new SelectElement(committeeDropdown);
+            committeeSelect.SelectByText(committeeName);
+        }
+
+        static void SelectSubCommittee(IWebDriver driver, WebDriverWait wait, string subCommitteeName)
+        {
+            IWebElement subCommitteeDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("select#subCommittee")));
+            SelectElement subCommitteeSelect = new SelectElement(subCommitteeDropdown);
+            subCommitteeSelect.SelectByText(subCommitteeName);
+        }
+
+        static void FillOrganizer(IWebDriver driver, WebDriverWait wait, string organizerName)
+        {
+            IWebElement organizerDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown#organizer")));
+            organizerDropdown.Click();
+            IWebElement organizerOption = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[contains(text(), '" + organizerName + "')]")));
+            organizerOption.Click();
+        }
+
+        static void FillDescription(IWebDriver driver, WebDriverWait wait, string description)
+        {
+            IWebElement descriptionTextarea = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("textarea#exampleFormControlTextarea1")));
+            descriptionTextarea.SendKeys(description);
+        }
 
     }
 }
