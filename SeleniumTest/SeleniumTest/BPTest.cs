@@ -1331,7 +1331,7 @@ namespace SeleniumTest
 
             // Initialize Chrome Driver
             var chromeOptions = new ChromeOptions();
-            //chromeOptions.AddArgument("--headless");
+            chromeOptions.AddArgument("--headless");
             chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
             IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
             driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
@@ -1647,14 +1647,22 @@ namespace SeleniumTest
                 IWebElement timezoneDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='timeZone']")));
                 timezoneDropdown.Click();
 
-                // Find the dropdown options container
-                IWebElement optionsContainer = wait.Until(ExpectedConditions.ElementExists(By.CssSelector("ul.ui-dropdown-items")));
+                // Wait for the options to load
+                wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.CssSelector("ul.ui-dropdown-items li span")));
 
-                Thread.Sleep(500);
-                // Find the specific timezone option within the container
-                IWebElement option = optionsContainer.FindElement(By.XPath(".//li[@role='option']//span[text()='" + timezone + "']"));
-                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", option); // Scroll into view if needed
-                option.Click();
+                // Find all the options
+                IList<IWebElement> options = driver.FindElements(By.CssSelector("ul.ui-dropdown-items li span"));
+
+                // Locate the specific timezone option and click it
+                foreach (IWebElement option in options)
+                {
+                    if (option.Text.Trim().Equals(timezone))
+                    {
+                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", option); // Scroll into view if needed
+                        option.Click();
+                        break;
+                    }
+                }
             }
             catch (WebDriverTimeoutException ex)
             {
@@ -1673,12 +1681,13 @@ namespace SeleniumTest
 
             // Find the datepicker element by its ID
             IWebElement datepicker = driver.FindElement(By.Id("ej2-datepicker_0_input"));
-
+            Thread.Sleep(1000);
             // Click on the datepicker to open the calendar
             datepicker.Click();
-
+            Thread.Sleep(500);
             // Execute JavaScript to set the desired date directly in the datepicker
             js.ExecuteScript($"document.querySelector('#ej2-datepicker_0_input').value = '{desiredDate}/{desiredMonth.Substring(0, 3)}/{desiredYear.Substring(2)}';");
+            Thread.Sleep(500);
 
         }
 
