@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SeleniumExtras.WaitHelpers;
 using OpenQA.Selenium.Interactions;
 using System.Diagnostics.Metrics;
+using System.Collections.ObjectModel;
 
 
 namespace SeleniumTest
@@ -1405,8 +1406,8 @@ namespace SeleniumTest
 
             Thread.Sleep(1500);
 
-            WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            FillTitle(driver, wait3, "BPM12102023_0");
+            WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+            FillTitle(driver, wait3, "BPM");
 
             Thread.Sleep(500);
 
@@ -1423,6 +1424,62 @@ namespace SeleniumTest
             Thread.Sleep(500);
 
             FillDescription(driver, wait3, "Your Description");
+
+            Thread.Sleep(500);
+
+            FillTimeZone(driver, "(UTC+05:30) Sri Jayawardenepura");
+
+            Thread.Sleep(500);
+
+            FillMeetingDate(driver, "26", "Feb", "2024");
+
+            Thread.Sleep(500);
+
+            FillStartTime(driver, "11", "30", "AM"); // Change values accordingly
+
+            Thread.Sleep(500);
+
+            FillEndTime(driver, "02", "00", "PM"); // Change values accordingly
+
+            Thread.Sleep(500);
+
+            FillSearchLocation(driver, wait3, "BoardPACADOVenue_0");
+
+            Thread.Sleep(500);
+
+            FillMeetingRoom(driver, wait3, "BoardRoom");
+
+            Thread.Sleep(500);
+
+            FillVideoConferencingOption(driver, wait3, "None");
+
+            Thread.Sleep(1500);
+
+            IWebElement saveButton = driver.FindElement(By.Id("addMeetingBtn"));
+            if (saveButton.Enabled)
+            {
+                saveButton.Click();
+                Thread.Sleep(500);
+                IWebElement toastMessageElement1 = null;
+                // Create a WebDriverWait instance
+                WebDriverWait wait4 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+                // Find the div element containing the toast message
+                toastMessageElement1 = wait4.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
+
+                // Get the text within the div element
+                string toastMessage = toastMessageElement1.Text;
+
+                // Use the captured message as needed
+                Console.WriteLine("Toast Message2: " + toastMessage);
+
+            }
+
+
+
+            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+            // Wait for the next page to load (you may need to adjust the timing)
+            wait5.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
 
             Thread.Sleep(1500);
 
@@ -1547,8 +1604,9 @@ namespace SeleniumTest
 
         static void FillTitle(IWebDriver driver, WebDriverWait wait, string title)
         {
+            string titlenew = title + GetCurrentFormattedDate();
             IWebElement titleInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input#title")));
-            titleInput.SendKeys(title);
+            titleInput.SendKeys(titlenew);
         }
 
         static void SelectCommittee(IWebDriver driver, WebDriverWait wait, string committeeName)
@@ -1579,5 +1637,181 @@ namespace SeleniumTest
             descriptionTextarea.SendKeys(description);
         }
 
+        static void FillTimeZone(IWebDriver driver, string timezone)
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60)); // Increased wait time
+
+            try
+            {
+                // Click on the timezone dropdown
+                IWebElement timezoneDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='timeZone']")));
+                timezoneDropdown.Click();
+
+                // Find the dropdown options container
+                IWebElement optionsContainer = wait.Until(ExpectedConditions.ElementExists(By.CssSelector("ul.ui-dropdown-items")));
+
+                Thread.Sleep(500);
+                // Find the specific timezone option within the container
+                IWebElement option = optionsContainer.FindElement(By.XPath(".//li[@role='option']//span[text()='" + timezone + "']"));
+                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", option); // Scroll into view if needed
+                option.Click();
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                // Print the page source or relevant information for debugging
+                Console.WriteLine(driver.PageSource);
+                Console.WriteLine("Exception: " + ex.Message);
+                // You might add additional handling or logging here
+                throw; // Re-throw the exception to indicate test failure
+            }
+        }        
+
+         static void FillMeetingDate(IWebDriver driver, string desiredDate, string desiredMonth, string desiredYear)
+        {          
+
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+
+            // Find the datepicker element by its ID
+            IWebElement datepicker = driver.FindElement(By.Id("ej2-datepicker_0_input"));
+
+            // Click on the datepicker to open the calendar
+            datepicker.Click();
+
+            // Execute JavaScript to set the desired date directly in the datepicker
+            js.ExecuteScript($"document.querySelector('#ej2-datepicker_0_input').value = '{desiredDate}/{desiredMonth.Substring(0, 3)}/{desiredYear.Substring(2)}';");
+
+        }
+
+        static void FillStartTime(IWebDriver driver, string hours, string minutes, string meridian)
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Wait for the timepicker element to be clickable
+            IWebElement timepicker = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("startTime")));
+
+            // Find the hour input field and set the hours
+            IWebElement hourInput = timepicker.FindElement(By.CssSelector(".ngb-tp-hour input"));
+            hourInput.Clear();
+            hourInput.SendKeys(hours);
+
+            // Find the minute input field and set the minutes
+            IWebElement minuteInput = timepicker.FindElement(By.CssSelector(".ngb-tp-minute input"));
+            minuteInput.Clear();
+            minuteInput.SendKeys(minutes);
+
+            // Find the meridian (AM/PM) button
+            IWebElement meridianBtn = timepicker.FindElement(By.CssSelector(".ngb-tp-meridian button"));
+
+            // Continuously click the meridian button until the desired meridian is selected
+            while (meridianBtn.Text.Trim() != meridian)
+            {
+                meridianBtn.Click();
+                // Add a short delay to allow the timepicker to update before checking again
+                System.Threading.Thread.Sleep(500); // Adjust delay time if needed
+            }
+        }
+
+        static void FillEndTime(IWebDriver driver, string hours, string minutes, string meridian)
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Wait for the timepicker element to be clickable
+            IWebElement timepicker = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("endTime")));
+
+            // Find the hour input field and set the hours
+            IWebElement hourInput = timepicker.FindElement(By.CssSelector(".ngb-tp-hour input"));
+            hourInput.Clear();
+            hourInput.SendKeys(hours);
+
+            // Find the minute input field and set the minutes
+            IWebElement minuteInput = timepicker.FindElement(By.CssSelector(".ngb-tp-minute input"));
+            minuteInput.Clear();
+            minuteInput.SendKeys(minutes);
+
+            // Find the meridian (AM/PM) button
+            IWebElement meridianBtn = timepicker.FindElement(By.CssSelector(".ngb-tp-meridian button"));
+
+            // Continuously click the meridian button until the desired meridian is selected
+            while (meridianBtn.Text.Trim() != meridian)
+            {
+                meridianBtn.Click();
+                // Add a short delay to allow the timepicker to update before checking again
+                System.Threading.Thread.Sleep(500); // Adjust delay time if needed
+            }
+        }
+
+        static void FillSearchLocation(IWebDriver driver, WebDriverWait wait, string location)
+        {
+            // Locate the dropdown element
+            IWebElement dropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='venue']")));
+
+            // Click the dropdown to open options
+            dropdown.Click();
+            Thread.Sleep(500);
+            // Find the desired option element by its text
+            string itemToSelect = location;
+            By optionLocator = By.XPath($"//div[contains(@class, 'country-item')]//*[contains(text(), '{itemToSelect}')]");
+            Thread.Sleep(500);
+
+            try
+            {
+                IWebElement option = wait.Until(ExpectedConditions.ElementToBeClickable(optionLocator));
+                Thread.Sleep(500);
+                // Click the option to select it
+                option.Click();
+                Thread.Sleep(500);
+
+                // Perform actions with the selected option if needed
+                // ...
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                Console.WriteLine("Element not found within the specified timeframe.");
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        static void FillMeetingRoom(IWebDriver driver, WebDriverWait wait, string meetingRoom)
+        {
+            Thread.Sleep(500);
+            IWebElement meetingRoomDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='meetingRoom']")));
+            meetingRoomDropdown.Click();
+            Thread.Sleep(1000);
+            // Find the desired option element by its text
+            string itemToSelect = meetingRoom;
+            By optionLocator = By.XPath($"//div[contains(@class, 'country-item')]//*[contains(text(), '{itemToSelect}')]");
+            Thread.Sleep(500);
+
+            try
+            {
+                IWebElement option = wait.Until(ExpectedConditions.ElementToBeClickable(optionLocator));
+                Thread.Sleep(500);
+                // Click the option to select it
+                option.Click();
+                Thread.Sleep(500);
+
+                // Perform actions with the selected option if needed
+                // ...
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                Console.WriteLine("Element not found within the specified timeframe.");
+                Console.WriteLine(ex.ToString());
+            }
+
+        }
+
+        static void FillVideoConferencingOption(IWebDriver driver, WebDriverWait wait, string option)
+        {
+            Thread.Sleep(500);
+            IWebElement videoConferencingDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='videoConferencingList']")));
+            videoConferencingDropdown.Click();
+            Thread.Sleep(1000);
+            // Locate the dropdown options and select the desired one based on the provided 'option' parameter
+            IWebElement optionToSelect = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='" + option + "']")));
+            Thread.Sleep(500);
+            optionToSelect.Click();
+            Thread.Sleep(500);
+        }
     }
 }
