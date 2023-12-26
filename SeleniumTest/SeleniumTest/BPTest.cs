@@ -12,6 +12,7 @@ using SeleniumExtras.WaitHelpers;
 using OpenQA.Selenium.Interactions;
 using System.Diagnostics.Metrics;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.Internal;
 
 
 namespace SeleniumTest
@@ -1599,7 +1600,7 @@ namespace SeleniumTest
             ReadOnlyCollection<IWebElement> tableRows = wait5.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.CssSelector("tbody.ui-table-tbody > tr")));
 
             // Select the first row (index 0)
-            IWebElement firstRow = tableRows[2];
+            IWebElement firstRow = tableRows[0];
 
             // Find the button within the row by its class name
             IWebElement button = firstRow.FindElement(By.CssSelector("button.table-icon-btn.alt-img"));
@@ -1661,6 +1662,217 @@ namespace SeleniumTest
 
         }
 
+        [TestMethod]
+        public void C_4_OrganizerAgendaUpload()
+        {
+            // URL of the login page
+            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+
+            // Credentials for login
+            string username = "BPUser1";
+            string password = "123";
+
+            // Initialize Chrome Driver
+            var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--headless");
+            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            // Open the login page
+            driver.Navigate().GoToUrl(loginUrl);
+
+            // Wait for the username field to be present
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
+
+            // Find the password input field and login button
+            IWebElement passwordField = driver.FindElement(By.Id("password"));
+            IWebElement loginButton = driver.FindElement(By.Id("loginBtn"));
+
+            // Input the username and password
+            usernameField.SendKeys(username);
+            passwordField.SendKeys(password);
+
+            // Perform the login action
+            loginButton.Click();
+
+            // Wait for the next page to load (you may need to adjust the timing)
+            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+
+            Thread.Sleep(500);
+
+            // Create a WebDriverWait instance
+            WebDriverWait wait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the menu element with a waiting strategy
+            IWebElement menu = wait1.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[href='#submenu3'][data-toggle='collapse']")));
+
+            // Check if the menu is expanded or collapsed
+            string ariaExpandedAttributeValue = menu.GetAttribute("aria-expanded");
+
+            if (ariaExpandedAttributeValue.Equals("true"))
+            {
+                // Menu is expanded, no action needed
+                Console.WriteLine("Meeting Managment Main Menu is already expanded");
+            }
+            else
+            {
+                // Menu is collapsed, click to expand
+                menu.Click();
+                Console.WriteLine("Meeting Managment Main Menu clicked to expanded");
+                Thread.Sleep(500);
+            }
+
+            // Find the <a> element for viewing users
+            IWebElement viewUserLink = new WebDriverWait(driver, TimeSpan.FromSeconds(30))
+                .Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[routerlink='/meeting/meetings'][routerlinkactive='active']")));
+
+            if (viewUserLink != null)
+            {
+                // Click on the link to view users if it's clickable
+                viewUserLink.Click();
+                Console.WriteLine("Meeting clicked to expanded");
+                Thread.Sleep(500);
+            }
+            else
+            {
+                // Handle the situation where the link is not clickable
+                Console.WriteLine("Meeting link is not clickable.");
+                // You can add further actions or error handling here if needed
+            }
+
+
+            WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+            // Wait for the next page to load (you may need to adjust the timing)
+            wait2.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
+
+            // Wait for the form to load
+            WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait3.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".card-body")));
+
+            Thread.Sleep(500);
+
+            // Set up WebDriverWait with a timeout of 10 seconds
+            WebDriverWait wait4 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the input field by its class name
+            IWebElement searchInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input.form-control.search-input")));
+
+            // Type the meeting name into the input field
+            string meetingName = "BPM12112023"; // Replace this with the actual meeting name
+            searchInput.SendKeys(meetingName);
+
+            // Set up WebDriverWait with a timeout of 10 seconds
+            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Wait for the table rows to be present
+            ReadOnlyCollection<IWebElement> tableRows = wait5.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.CssSelector("tbody.ui-table-tbody > tr")));
+
+            // Select the first row (index 0)
+            IWebElement firstRow = tableRows[0];
+
+            // Find the button within the row by its class name
+            IWebElement button = firstRow.FindElement(By.CssSelector("button.table-icon-btn.ng-star-inserted > i.pi.pi-list"));
+
+            // Click the button
+            button.Click();
+
+            Thread.Sleep(500);
+
+            // Wait for the URL to match the expected pattern
+            wait4.Until(driver => driver.Url.StartsWith("https://azuredevops.boardpaconline.com/WebClient/meeting/agenda"));
+
+            Thread.Sleep(500);
+
+            // Set up WebDriverWait with a timeout of 10 seconds
+            WebDriverWait wait6 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the upload button by its class and tag
+            IWebElement uploadButton = wait6.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a.btn.btn-upload")));
+
+            // Click the upload button
+            uploadButton.Click();
+
+            // Set up WebDriverWait with a timeout of 10 seconds
+            //WebDriverWait wait7 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            //IWebElement folderRadioButton = wait7.Until(ExpectedConditions.ElementExists(By.XPath("//p-radiobutton[@name='uploadSelection']/div/div[contains(@class, 'ui-radiobutton-box')]/span[contains(@class, 'pi-circle-on')]")));
+
+            //// Check if the folder radio button is not already selected
+            //if (!folderRadioButton.Selected)
+            //{
+            //    // Click the folder radio button to activate it
+            //    folderRadioButton.Click();
+            //}
+
+            string solutionDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../");
+            string folderPathRelativeToSolution = @"UploadDoc/TestDoc";
+
+            string folderAbsolutePath = Path.Combine(solutionDirectory, folderPathRelativeToSolution);
+
+            // Specify the source folder path (inside the solution directory)
+            string sourceFolderPath = Path.Combine(folderAbsolutePath, "Agenda");
+
+            string path = "TestDoc" + GetCurrentFormattedDate();
+            // Specify the destination folder path in the C drive
+            string destinationFolderPath = @"C:\"+path+@"\Agenda";
+
+            // Copy the folder and its contents recursively to the destination
+            CopyFolder(sourceFolderPath, destinationFolderPath);
+
+            WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            Thread.Sleep(2000);
+
+            // Wait for the file input element to be available
+            IWebElement fileInput = wait8.Until(ExpectedConditions.ElementExists(By.CssSelector("input[name='UploadFiles'][directory='true']")));
+
+            Thread.Sleep(2000);
+            // Send the folder path to the file input element
+            fileInput.SendKeys(destinationFolderPath);
+
+            Thread.Sleep(1000);
+
+            // Find the checkbox element by its ID
+            IWebElement publishAllCheckbox = driver.FindElement(By.Id("inlineCheckbox1"));
+
+            // Check the checkbox if it's not already selected
+            if (!publishAllCheckbox.Selected)
+            {
+                publishAllCheckbox.Click();
+            }
+
+            Thread.Sleep(500);
+            // Find the upload button by its ID
+            IWebElement uploadButton2 = driver.FindElement(By.Id("btnSubmit"));
+
+            // Click the upload button
+            uploadButton2.Click();
+            Thread.Sleep(2000);
+
+            IWebElement toastMessageElement1 = null;
+            // Create a WebDriverWait instance
+            WebDriverWait wait9 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the div element containing the toast message
+            toastMessageElement1 = wait9.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
+
+            // Get the text within the div element
+            string toastMessage = toastMessageElement1.Text;
+
+            // Use the captured message as needed
+            Console.WriteLine("Toast Message2: " + toastMessage);
+
+            // Wait for the next page to load (you may need to adjust the timing)
+            Thread.Sleep(1000);
+
+            // Close the browser
+            driver.Quit();
+
+
+
+        }
 
         static void InsertSalutation(IWebDriver driver, string salutation)
         {
@@ -1986,6 +2198,28 @@ namespace SeleniumTest
             Thread.Sleep(500);
             optionToSelect.Click();
             Thread.Sleep(500);
+        }
+
+        static void CopyFolder(string sourceFolder, string destinationFolder)
+        {
+            if (!Directory.Exists(destinationFolder))
+            {
+                Directory.CreateDirectory(destinationFolder);
+            }
+
+            foreach (string file in Directory.GetFiles(sourceFolder))
+            {
+                string fileName = Path.GetFileName(file);
+                string destFile = Path.Combine(destinationFolder, fileName);
+                File.Copy(file, destFile, true);
+            }
+
+            foreach (string subFolder in Directory.GetDirectories(sourceFolder))
+            {
+                string folderName = Path.GetFileName(subFolder);
+                string destFolder = Path.Combine(destinationFolder, folderName);
+                CopyFolder(subFolder, destFolder);
+            }
         }
     }
 }
