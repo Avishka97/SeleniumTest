@@ -1314,8 +1314,11 @@ namespace SeleniumTest
             WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             // Wait for the next page to load (you may need to adjust the timing)
             wait8.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/venue/venues")); // Replace "expectedPage" with part of the URL of the next page
+                                                                                                                          // Wait for the next page to load (you may need to adjust the timing)
+            Thread.Sleep(1000);
 
-            Thread.Sleep(1500);
+            // Close the browser
+            driver.Quit();
 
         }
 
@@ -1480,10 +1483,184 @@ namespace SeleniumTest
             WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             // Wait for the next page to load (you may need to adjust the timing)
             wait5.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
+                                                                                                                              // Wait for the next page to load (you may need to adjust the timing)
+            Thread.Sleep(1000);
 
-            Thread.Sleep(1500);
+            // Close the browser
+            driver.Quit();
 
         }
+
+        [TestMethod]
+        public void C_3_OrganizerMeetingschedule()
+        {
+            // URL of the login page
+            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+
+            // Credentials for login
+            string username = "BPUser1";
+            string password = "123";
+
+            // Initialize Chrome Driver
+            var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--headless");
+            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            // Open the login page
+            driver.Navigate().GoToUrl(loginUrl);
+
+            // Wait for the username field to be present
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
+
+            // Find the password input field and login button
+            IWebElement passwordField = driver.FindElement(By.Id("password"));
+            IWebElement loginButton = driver.FindElement(By.Id("loginBtn"));
+
+            // Input the username and password
+            usernameField.SendKeys(username);
+            passwordField.SendKeys(password);
+
+            // Perform the login action
+            loginButton.Click();
+
+            // Wait for the next page to load (you may need to adjust the timing)
+            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+
+            Thread.Sleep(500);
+
+            // Create a WebDriverWait instance
+            WebDriverWait wait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the menu element with a waiting strategy
+            IWebElement menu = wait1.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[href='#submenu3'][data-toggle='collapse']")));
+
+            // Check if the menu is expanded or collapsed
+            string ariaExpandedAttributeValue = menu.GetAttribute("aria-expanded");
+
+            if (ariaExpandedAttributeValue.Equals("true"))
+            {
+                // Menu is expanded, no action needed
+                Console.WriteLine("Meeting Managment Main Menu is already expanded");
+            }
+            else
+            {
+                // Menu is collapsed, click to expand
+                menu.Click();
+                Console.WriteLine("Meeting Managment Main Menu clicked to expanded");
+                Thread.Sleep(500);
+            }
+
+            // Find the <a> element for viewing users
+            IWebElement viewUserLink = new WebDriverWait(driver, TimeSpan.FromSeconds(30))
+                .Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[routerlink='/meeting/meetings'][routerlinkactive='active']")));
+
+            if (viewUserLink != null)
+            {
+                // Click on the link to view users if it's clickable
+                viewUserLink.Click();
+                Console.WriteLine("Meeting clicked to expanded");
+                Thread.Sleep(500);
+            }
+            else
+            {
+                // Handle the situation where the link is not clickable
+                Console.WriteLine("Meeting link is not clickable.");
+                // You can add further actions or error handling here if needed
+            }
+
+
+            WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+            // Wait for the next page to load (you may need to adjust the timing)
+            wait2.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
+
+            // Wait for the form to load
+            WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait3.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".card-body")));
+
+            Thread.Sleep(500);
+
+            // Set up WebDriverWait with a timeout of 10 seconds
+            WebDriverWait wait4 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the input field by its class name
+            IWebElement searchInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input.form-control.search-input")));
+
+            // Type the meeting name into the input field
+            string meetingName = "BPM12112023"; // Replace this with the actual meeting name
+            searchInput.SendKeys(meetingName);
+
+            // Set up WebDriverWait with a timeout of 10 seconds
+            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            
+            // Wait for the table rows to be present
+            ReadOnlyCollection<IWebElement> tableRows = wait5.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.CssSelector("tbody.ui-table-tbody > tr")));
+
+            // Select the first row (index 0)
+            IWebElement firstRow = tableRows[2];
+
+            // Find the button within the row by its class name
+            IWebElement button = firstRow.FindElement(By.CssSelector("button.table-icon-btn.alt-img"));
+
+            // Click the button
+            button.Click();
+
+            Thread.Sleep(500);
+
+            // Set up WebDriverWait with a timeout of 10 seconds
+            WebDriverWait wait6 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Wait for the popup to be present
+            IWebElement popup = wait6.Until(ExpectedConditions.ElementExists(By.ClassName("ui-dialog-content")));
+
+            // Find the dropdown menu within the popup
+            IWebElement dropdown = popup.FindElement(By.CssSelector("p-dropdown"));
+
+            // Click the dropdown to open the options
+            dropdown.Click();
+
+            // Wait for the dropdown options to be visible
+            IWebElement dropdownOptions = wait.Until(ExpectedConditions.ElementExists(By.CssSelector("div.ui-dropdown-items-wrapper")));
+
+            // Select the option "Scheduled" (you can change this based on your requirement)
+            IWebElement optionScheduled = dropdownOptions.FindElement(By.XPath("//span[text()='Scheduled']"));
+            optionScheduled.Click();
+
+            Thread.Sleep(500);
+
+            // Set up WebDriverWait with a timeout of 10 seconds
+            WebDriverWait wait7 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Wait for the "Save" button to be clickable
+            IWebElement saveButton = wait7.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector(".ui-dialog-footer button.btn.btn-primary-submit")));
+
+            // Click the "Save" button
+            saveButton.Click();
+
+            IWebElement toastMessageElement1 = null;
+            // Create a WebDriverWait instance
+            WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the div element containing the toast message
+            toastMessageElement1 = wait8.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
+
+            // Get the text within the div element
+            string toastMessage = toastMessageElement1.Text;
+
+            // Use the captured message as needed
+            Console.WriteLine("Toast Message2: " + toastMessage);
+
+            // Wait for the next page to load (you may need to adjust the timing)
+            Thread.Sleep(1000);
+
+            // Close the browser
+            driver.Quit();
+
+
+        }
+
 
         static void InsertSalutation(IWebDriver driver, string salutation)
         {
@@ -1589,18 +1766,6 @@ namespace SeleniumTest
 
             return formattedDate;
         }
-
-        //static void InsertMobileNumber(IWebDriver driver, string mobileNumber)
-        //{
-        //    IWebElement mobileNumberInput = driver.FindElement(By.Id("mobileNumber"));
-        //    mobileNumberInput.SendKeys(mobileNumber);
-        //}
-
-        //static void InsertOfficeNumber(IWebDriver driver, string officeNumber)
-        //{
-        //    IWebElement officeNumberInput = driver.FindElement(By.Id("officeNumber"));
-        //    officeNumberInput.SendKeys(officeNumber);
-        //}
 
         static void FillTitle(IWebDriver driver, WebDriverWait wait, string title)
         {
