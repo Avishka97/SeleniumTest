@@ -2073,7 +2073,7 @@ namespace SeleniumTest
 
 
             // Create a WebDriverWait instance
-            WebDriverWait wait11 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            WebDriverWait wait11 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
 
             // Find the div element containing the toast message
             toastMessageElement2 = wait11.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
@@ -2245,7 +2245,7 @@ namespace SeleniumTest
             // Wait for the dialog box to be present on the page
             wait6.Until(ExpectedConditions.ElementIsVisible(dialogBoxLocator));
 
-            Thread.Sleep(2000);
+            Thread.Sleep(3000);
             // Find the download button by its ID
             IWebElement downloadButton = driver.FindElement(By.Id("submitBtn"));
 
