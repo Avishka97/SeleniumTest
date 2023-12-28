@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium.Chrome;
+﻿using Microsoft.Extensions.Configuration;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium;
 using System;
@@ -14,36 +15,96 @@ using System.Diagnostics.Metrics;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Internal;
 using System.Configuration;
+using NUnit.Framework;
+
 
 
 namespace SeleniumTest
 {
-   
+    public class TestContext
+    {
+        public static string OrgUserName { get; set; }
+        public static string OrgFname { get; set; }
+        public static string OrgLName { get; set; }
+        public static string OrgDisplayName { get; set; }
+        public static string OrgPassword { get; set; }
+        public static string MeetingTitle { get; set; }
+
+        public static string committeeNameInput { get; set; }
+        public static string deviceDisplayNameInput { get; set; }
+        public static string subcommitteeNameInput { get; set; }
+        public static string subdeviceDisplayNameInput1 { get; set; }
+
+        public static string venue { get; set; }
+    }
+
+
     [TestClass]
     public class BPTest
     {
-        //string MainURL = ConfigurationManager.AppSettings["BaseUrl"];
+        private IConfiguration _configuration;
+        private string MainURL;
+        private string MainURLWithoutTenant;
+        private string SysadminPassword;
+        private string BoardAdminPassword;
+        private string DefaultPassword;
+        private IWebDriver driver;
+        private ChromeOptions chromeOptions;
+        public  BPTest()
+        {
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json"); // Load the appsettings.json file
 
-        [TestMethod]
+            _configuration = builder.Build();
+
+            MainURL = _configuration["AppSettings:BaseUrl"];
+            MainURLWithoutTenant = _configuration["AppSettings:BaseUrlWithoutTenant"];
+            SysadminPassword = _configuration["AppSettings:SysadminPassword"];
+            BoardAdminPassword = _configuration["AppSettings:BoardAdminPassword"];
+            DefaultPassword = _configuration["AppSettings:DefaultPassword"];
+        }
+
+        
+
+        //static void Main(string[] args)
+        //{
+
+        //}
+
+        [SetUp]
+        public void Setup()
+        {
+            // Initialize Chrome Driver
+            chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--headless");
+            //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
+            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
+        }
+
+
+        [Test, Order(1)]
         public void A_0_SysadminLogin()
         {
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
             string username = "sysadmin";
-            string password = "123";
+            string password = SysadminPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
-
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(300));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
@@ -60,7 +121,7 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             // Use the captured message as needed
             Console.WriteLine("sysadmin login successfully");
@@ -69,30 +130,30 @@ namespace SeleniumTest
             Thread.Sleep(1000);
 
             // Close the browser
-            driver.Quit();
+            //driver.Quit();
         }
 
-        [TestMethod]
+        [Test, Order(2)]
         public void A_1_SysadminChecking()
         {
 
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
             string username = "sysadmin";
-            string password = "123";
+            string password = SysadminPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
-
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(300));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
@@ -109,7 +170,7 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             Thread.Sleep(500);
             // Find and click on the menu item
@@ -156,30 +217,30 @@ namespace SeleniumTest
             Thread.Sleep(1000);
 
             // Close the browser
-            driver.Quit();
+            //driver.Quit();
         }
 
-        [TestMethod]
+        [Test, Order(3)]
         public void B_0_BoardadminLogin()
         {
 
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
             string username = "boardadmin";
-            string password = "123";
+            string password = BoardAdminPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
-
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(300));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
@@ -196,7 +257,7 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             // Use the captured message as needed
             Console.WriteLine("boardadmin login successfully");
@@ -205,30 +266,30 @@ namespace SeleniumTest
             Thread.Sleep(1000);
 
             // Close the browser
-            driver.Quit();
+            //driver.Quit();
         }
 
-        [TestMethod]
+        [Test, Order(4)]
         public void B_1_BoardadminChecking()
         {
 
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
             string username = "boardadmin";
-            string password = "123";
+            string password = BoardAdminPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
-
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(300));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
@@ -245,7 +306,7 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             Thread.Sleep(500);
 
@@ -277,7 +338,7 @@ namespace SeleniumTest
 
             // Get the text within the div element
             string toastMessage = toastMessageElement1.Text;
-            
+
             // Use the captured message as needed
             Console.WriteLine("Toast Message2: " + toastMessage);
 
@@ -294,33 +355,33 @@ namespace SeleniumTest
             Thread.Sleep(1000);
 
             // Close the browser
-            driver.Quit();
+            //driver.Quit();
         }
 
-        [TestMethod]
+        [Test, Order(5)]
         public void B_2_BoardadminUserCreating()
         {
 
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
             string username = "boardadmin";
-            string password = "123";
+            string password = BoardAdminPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            ////chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            //driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
 
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600); // Set page load timeout to 30 seconds (example)
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200); // Set page load timeout to 30 seconds (example)
 
             // Wait for the username field to be present
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
@@ -338,13 +399,16 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             // Define the base username
-            string baseUsername = "Avishka";
+            string baseUsername = "BP";
+            string baseOrgFname = "BP";
+            string baseOrgLName = "BoardPAC";
+            string baseOrgDisplayName = "BPBoardPAC";
 
             // Initialize a counter
-            int counter = 103;
+            int counter = 12;
 
             bool userAdded = false;
 
@@ -376,6 +440,7 @@ namespace SeleniumTest
                     Thread.Sleep(500);
                 }
 
+                Thread.Sleep(1500);
                 // Find the <a> element for viewing users
                 IWebElement viewUserLink = new WebDriverWait(driver, TimeSpan.FromSeconds(30))
                     .Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("a[routerlink='/usermgt/viewUsers'][routerlinkactive='active']")));
@@ -394,7 +459,7 @@ namespace SeleniumTest
                     // You can add further actions or error handling here if needed
                 }
 
-
+                Thread.Sleep(1500);
                 // Create a WebDriverWait instance
                 WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
@@ -416,7 +481,7 @@ namespace SeleniumTest
                     Console.WriteLine("User Managment Main Menu clicked to expanded");
                     Thread.Sleep(500);
                 }
-
+                Thread.Sleep(1500);
 
                 // Find the <a> element for user creation
                 IWebElement createUserLink = new WebDriverWait(driver, TimeSpan.FromSeconds(30))
@@ -435,7 +500,7 @@ namespace SeleniumTest
                     Console.WriteLine("Create User link is not clickable.");
                     // You can add further actions or error handling here if needed
                 }
-
+                Thread.Sleep(1500);
                 //Creating a User
                 // Wait for the form to load
                 WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(50));
@@ -443,9 +508,13 @@ namespace SeleniumTest
 
                 Thread.Sleep(2000);
                 try
-                {                    
+                {
                     // Create the next username by appending the counter
                     string nextUsername = baseUsername + counter;
+                    string nextOrgFname = baseOrgFname + counter;
+                    string nextOrgLName = baseOrgLName + counter;
+                    string nextOrgDisplayName = baseOrgDisplayName + counter;
+                    Thread.Sleep(500);
 
                     Console.WriteLine("starting to add MR");
                     // Insert values into the form
@@ -457,25 +526,26 @@ namespace SeleniumTest
 
                     Thread.Sleep(200);
 
-                    InsertFirstName(driver, "Avishka");
+                    InsertFirstName(driver, nextOrgFname);
 
                     Thread.Sleep(200);
 
-                    InsertLastName(driver, "BoardPAC");
+                    InsertLastName(driver, nextOrgLName);
 
                     Thread.Sleep(200);
 
-                    InsertPrimaryEmail(driver, "avishkalaki@hotmail.com");
+                    InsertPrimaryEmail(driver, "support@boardpac.co");
 
                     Thread.Sleep(200);
 
-                    InsertDeviceDisplayName(driver, "AvishkaBoardPAC");
+                    InsertDeviceDisplayName(driver, nextOrgDisplayName);
 
                     Thread.Sleep(200);
 
                     InsertUserType(driver, "Organizer");
 
                     Thread.Sleep(200);
+
 
 
                     // Click the submit button (assuming it's initially disabled)
@@ -502,7 +572,7 @@ namespace SeleniumTest
 
                             // Use the captured message as needed
                             Console.WriteLine("Toast Message: " + toastMessage);
-
+                            Thread.Sleep(500);
 
                             if (toastMessage.Contains("User name " + nextUsername + " is already taken."))
                             {
@@ -513,6 +583,18 @@ namespace SeleniumTest
                             else
                             {
                                 userAdded = true;
+
+                                TestContext.OrgUserName = nextUsername;
+                                TestContext.OrgFname = nextOrgFname;
+                                TestContext.OrgLName = nextOrgLName;
+                                TestContext.OrgDisplayName = nextOrgDisplayName;
+
+                                Console.WriteLine("UserName: " + TestContext.OrgUserName);
+                                Console.WriteLine("OrgFname: " + TestContext.OrgFname);
+                                Console.WriteLine("OrgLName: " + TestContext.OrgLName);
+                                Console.WriteLine("OrgDisplayName: " + TestContext.OrgDisplayName);
+
+
                                 Thread.Sleep(500);
 
                             }
@@ -520,7 +602,7 @@ namespace SeleniumTest
                         }
                         catch (StaleElementReferenceException)
                         {
-                                                       
+
                             // If the element reference becomes stale, re-find the element and retrieve the text again
                             toastMessageElement = driver.FindElement(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message"));
 
@@ -534,7 +616,7 @@ namespace SeleniumTest
                             Thread.Sleep(1000);
 
                             // Close the browser
-                            driver.Quit();
+                            //driver.Quit();
                         }
 
 
@@ -546,46 +628,47 @@ namespace SeleniumTest
                 catch (Exception ex)
                 {
                     // Handle other exceptions or rethrow the exception
+                    Console.WriteLine("Toast Message: " + ex);
                     throw;
                 }
             }
 
             WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
             // Wait for the next page to load (you may need to adjust the timing)
-            wait3.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace "expectedPage" with part of the URL of the next page
+            wait3.Until(ExpectedConditions.UrlContains(MainURLWithoutTenant + @"/usermgt/viewUsers")); // Replace "expectedPage" with part of the URL of the next page
 
 
             // Wait for the next page to load (you may need to adjust the timing)
             Thread.Sleep(1000);
 
             // Close the browser
-            driver.Quit();
+            //driver.Quit();
 
         }
 
-        [TestMethod]
+        [Test, Order(6)]
         public void B_3_BoardadminUserUpdate()
         {
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
             string username = "boardadmin";
-            string password = "123";
+            string password = BoardAdminPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            ////chromeOptions.AddArgument("--headless");
+            ////chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            //driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
 
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600); // Set page load timeout to 30 seconds (example)
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200); // Set page load timeout to 30 seconds (example)
 
             // Wait for the username field to be present
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
@@ -603,7 +686,7 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             // Create a WebDriverWait instance
             WebDriverWait wait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
@@ -679,14 +762,31 @@ namespace SeleniumTest
             Thread.Sleep(500);
 
             // Wait for the URL to match the expected pattern
-            wait4.Until(driver => driver.Url.StartsWith("https://azuredevops.boardpaconline.com/WebClient/usermgt/updateuser"));
+            wait4.Until(driver1 => driver.Url.StartsWith(MainURLWithoutTenant + @"/usermgt/updateuser"));
+            //string Add = "A";
+
+            Console.WriteLine("TestContextOrgDisplayName: " + TestContext.OrgDisplayName);
+            Console.WriteLine("TestContextOrgLName: " + TestContext.OrgLName);
+
+            string OrgDisplayName2 = TestContext.OrgDisplayName + "A";
+            string OrgLName2 = TestContext.OrgLName + "A";
+
+            Console.WriteLine("OrgDisplayName: " + OrgDisplayName2);
+            Console.WriteLine("OrgLName: " + OrgLName2);
 
             Thread.Sleep(1000);
             // Perform other actions after the URL matches the pattern...
-            InsertDeviceDisplayName(driver, "BoardPACTest1");
+            InsertDeviceDisplayName(driver, OrgDisplayName2);
             Thread.Sleep(1000);
-            InsertLastName(driver, "BoardPACNew");
+            InsertLastName(driver, OrgLName2);
             Thread.Sleep(1000);
+
+            TestContext.OrgLName = OrgLName2;
+            TestContext.OrgDisplayName = OrgDisplayName2;
+
+            Thread.Sleep(500);
+            Console.WriteLine("OrgDisplayNamefinal: " + TestContext.OrgDisplayName);
+            Console.WriteLine("OrgLNamefinal: " + TestContext.OrgLName);
 
             // Click the submit button (assuming it's initially disabled)
             IWebElement submitButton = driver.FindElement(By.Id("submitBtn"));
@@ -721,14 +821,14 @@ namespace SeleniumTest
                         Console.WriteLine("Toast Message contains: " + targetString);
                         WebDriverWait wait6 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                         // Wait for the next page to load (you may need to adjust the timing)
-                        wait6.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/usermgt/viewUsers")); // Replace "expectedPage" with part of the URL of the next page
+                        wait6.Until(ExpectedConditions.UrlContains(MainURLWithoutTenant + @"/usermgt/viewUsers")); // Replace "expectedPage" with part of the URL of the next page
 
 
                         // Wait for the next page to load (you may need to adjust the timing)
                         Thread.Sleep(1000);
 
                         // Close the browser
-                        driver.Quit();
+                        //driver.Quit();
 
                     }
                     else
@@ -739,7 +839,7 @@ namespace SeleniumTest
                         Thread.Sleep(1000);
 
                         // Close the browser
-                        driver.Quit();
+                        //driver.Quit();
 
                     }
                 }
@@ -759,37 +859,37 @@ namespace SeleniumTest
                     Thread.Sleep(1000);
 
                     // Close the browser
-                    driver.Quit();
+                    //driver.Quit();
                 }
 
             }
         }
 
-        [TestMethod]
+        [Test, Order(7)]
         public void B_4_BoardadminCreateCommittee()
         {
 
             string formattedDate = GetCurrentFormattedDate();
 
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
             string username = "boardadmin";
-            string password = "123";
+            string password = BoardAdminPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            ////chromeOptions.AddArgument("--headless");
+            ////chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
 
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600); // Set page load timeout to 30 seconds (example)
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200); // Set page load timeout to 30 seconds (example)
 
             // Wait for the username field to be present
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
@@ -807,7 +907,7 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             // Find the <a> element for user creation
             IWebElement createCommitteeLink = new WebDriverWait(driver, TimeSpan.FromSeconds(30))
@@ -840,7 +940,7 @@ namespace SeleniumTest
 
 
             // Initialize a counter
-            int counter = 15;
+            int counter = 1;
 
             bool userAdded = false;
 
@@ -848,11 +948,14 @@ namespace SeleniumTest
             {
                 // Find input fields for Committee Name and Device Display Name
                 IWebElement committeeNameInput = driver.FindElement(By.Id("committeeNameId"));
-                IWebElement deviceDisplayNameInput = driver.FindElement(By.Id("committeeDeviceDisplayNameId"));                
+                IWebElement deviceDisplayNameInput = driver.FindElement(By.Id("committeeDeviceDisplayNameId"));
+
+                string committeeName3 = "BPCommittee" + formattedDate + "_" + counter;
+                string displaycommitteeName3 = "BP" + formattedDate;
 
                 // Enter text into the fields
-                committeeNameInput.SendKeys("BPCommittee" + formattedDate+"_"+counter);
-                deviceDisplayNameInput.SendKeys("BP" + formattedDate);
+                committeeNameInput.SendKeys(committeeName3);
+                deviceDisplayNameInput.SendKeys(displaycommitteeName3);
 
                 // Wait for the next page to load (you may need to adjust the timing)
                 Thread.Sleep(500);
@@ -861,9 +964,16 @@ namespace SeleniumTest
                 if (saveButton.Enabled)
                 {
                     saveButton.Click();
+
+                    TestContext.committeeNameInput = committeeName3;
+                    TestContext.deviceDisplayNameInput = displaycommitteeName3;
+
+                    Console.WriteLine("committeeNameInput: " + TestContext.committeeNameInput);
+                    Console.WriteLine("deviceDisplayNameInput: " + TestContext.deviceDisplayNameInput);
+
                     userAdded = true;
                     Thread.Sleep(500);
-                    
+
                 }
                 else
                 {
@@ -871,12 +981,12 @@ namespace SeleniumTest
                     deviceDisplayNameInput.Clear();
                     counter++;
                     Thread.Sleep(500);
-                    
+
                 }
 
             }
 
-            string targetCommitteeName = "BPCommittee" + formattedDate + "_" + counter;
+            string targetCommitteeName = TestContext.committeeNameInput;
 
             Thread.Sleep(500);
 
@@ -899,7 +1009,7 @@ namespace SeleniumTest
 
             Thread.Sleep(500);
 
-            WebDriverWait wait4 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));     
+            WebDriverWait wait4 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
             // Wait for the table to be visible
             IWebElement table = wait4.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("p-table[datakey='id']")));
@@ -922,9 +1032,12 @@ namespace SeleniumTest
                 IWebElement committeeNameInput1 = driver.FindElement(By.Id("committeeNameId"));
                 IWebElement deviceDisplayNameInput1 = driver.FindElement(By.Id("committeeDeviceDisplayNameId"));
 
+                string subcommitteeNameInput1 = "BPSubCommittee" + formattedDate + "_" + counter1;
+                string subdeviceDisplayNameInput1 = "BP" + formattedDate;
+
                 // Enter text into the fields
-                committeeNameInput1.SendKeys("BPSubCommittee" + formattedDate + "_" + counter1);
-                deviceDisplayNameInput1.SendKeys("BP" + formattedDate);
+                committeeNameInput1.SendKeys(subcommitteeNameInput1);
+                deviceDisplayNameInput1.SendKeys(subdeviceDisplayNameInput1);
 
                 // Wait for the next page to load (you may need to adjust the timing)
                 Thread.Sleep(500);
@@ -934,6 +1047,12 @@ namespace SeleniumTest
                 {
                     saveButton1.Click();
                     userAdded1 = true;
+                    TestContext.subcommitteeNameInput = subcommitteeNameInput1;
+                    TestContext.subdeviceDisplayNameInput1 = subdeviceDisplayNameInput1;
+
+                    Console.WriteLine("subcommitteeNameInput: " + TestContext.subcommitteeNameInput);
+                    Console.WriteLine("subdeviceDisplayNameInput1: " + TestContext.subdeviceDisplayNameInput1);
+
                     Thread.Sleep(500);
 
                 }
@@ -950,19 +1069,19 @@ namespace SeleniumTest
 
             WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
-            string targetCommitteeName1 = "BPCommittee" + formattedDate + "_" + counter;
-            string targetSubcommitteeName1 = "BPSubCommittee" + formattedDate + "_" + counter1;
+            string targetCommitteeName1 = TestContext.committeeNameInput;
+            string targetSubcommitteeName1 = TestContext.subcommitteeNameInput;
 
             Thread.Sleep(500);
 
             WebDriverWait wait7 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
             // Find the Committee with name BPCommittee12092023_10
-            IWebElement committee = wait7.Until(ExpectedConditions.ElementExists(By.XPath("//a[contains(., '"+targetCommitteeName1+"')]")));
+            IWebElement committee = wait7.Until(ExpectedConditions.ElementExists(By.XPath("//a[contains(., '" + targetCommitteeName1 + "')]")));
             committee.Click();
 
             // Find the Subcommittee with name BPSubCommittee12092023_0
-            IWebElement subcommittee = wait7.Until(ExpectedConditions.ElementExists(By.XPath("//td[contains(., '"+targetSubcommitteeName1+ "')]")));
+            IWebElement subcommittee = wait7.Until(ExpectedConditions.ElementExists(By.XPath("//td[contains(., '" + targetSubcommitteeName1 + "')]")));
 
             // Find the parent <tr> element of the subcommittee
             IWebElement subcommitteeRow = subcommittee.FindElement(By.XPath("./ancestor::tr"));
@@ -975,7 +1094,7 @@ namespace SeleniumTest
             assignRolesButton.Click();
 
             // Wait for the URL to match the expected pattern
-            wait7.Until(driver => driver.Url.StartsWith("https://azuredevops.boardpaconline.com/WebClient/privilegemgt/privilegemgt"));
+            wait7.Until(driver1 => driver.Url.StartsWith(MainURLWithoutTenant + @"/privilegemgt/privilegemgt"));
 
             Thread.Sleep(2000);
 
@@ -1011,19 +1130,23 @@ namespace SeleniumTest
             var searchInput1 = driver.FindElement(By.CssSelector(".ui-multiselect-filter-container input[type='text']"));
             var dropdownItems1 = driver.FindElements(By.CssSelector(".ui-multiselect-item"));
 
+            Console.WriteLine("OrgFname: " + TestContext.OrgFname);
+            string Fname = TestContext.OrgFname;
             // Enter text into the search input
-            searchInput1.SendKeys("Avishka");
+            searchInput1.SendKeys(Fname);
 
-            string FnameLname = "Avishka BoardPACNew";
+            string FnameLname = TestContext.OrgFname + " " + TestContext.OrgLName;
+
+            Console.WriteLine("FnameLname: " + FnameLname);
 
             Thread.Sleep(1000);
 
             // Wait for the options to filter based on search
             WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            wait8.Until(ExpectedConditions.ElementExists(By.CssSelector(".ui-multiselect-item[aria-label='"+FnameLname+"']")));
+            wait8.Until(ExpectedConditions.ElementExists(By.CssSelector(".ui-multiselect-item[aria-label='" + FnameLname + "']")));
 
             // Find and select "Avishka BoardPAC" based on its label attribute
-            var avishkaBoardPac = driver.FindElement(By.CssSelector(".ui-multiselect-item[aria-label='"+FnameLname+"']"));
+            var avishkaBoardPac = driver.FindElement(By.CssSelector(".ui-multiselect-item[aria-label='" + FnameLname + "']"));
             avishkaBoardPac.Click();
 
             Thread.Sleep(500);
@@ -1078,31 +1201,31 @@ namespace SeleniumTest
             Thread.Sleep(1000);
 
             // Close the browser
-            driver.Quit();
+            //driver.Quit();
 
 
         }
 
-        [TestMethod]
-        public void C_0_OrganizerLogin()
+        [Test, Order(8)]
+        public void C_0_0_OrganizerLoginPasswordReset()
         {
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
-            string username = "BPUser1";
-            string password = "123";
+            string username = TestContext.OrgUserName;
+            string password = DefaultPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
 
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
-
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(300));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
@@ -1119,7 +1242,99 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/changepassword")); // Replace "expectedPage" with part of the URL of the next page
+
+            // You can add further actions after successful login here
+            Thread.Sleep(1500);
+
+            // Wait for the form to load
+            WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait2.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".card-body")));
+            Thread.Sleep(2500);
+            // Find the current password, new password, and confirm password fields
+            IWebElement currentPasswordField = driver.FindElement(By.Id("currentPassword"));
+            IWebElement newPasswordField = driver.FindElement(By.Id("newPassword"));
+            IWebElement confirmPasswordField = driver.FindElement(By.Id("confirmPassword"));
+
+            // Replace these strings with the passwords you want to use
+            string currentPassword = DefaultPassword;
+            string newPassword = @"Qwerty$4.0";
+            IWebElement toastMessageElement2 = null;
+
+
+
+            // Enter passwords into the respective fields
+            currentPasswordField.SendKeys(currentPassword);
+            Thread.Sleep(500);
+            newPasswordField.SendKeys(newPassword);
+            Thread.Sleep(500);
+            confirmPasswordField.SendKeys(newPassword); // Confirm password by entering it again
+            Thread.Sleep(500);
+
+            // Assuming there's a submit button, find and click it
+            // Replace 'submitButtonId' with the actual ID of your submit button
+            IWebElement submitButton = driver.FindElement(By.Id("changePasswordBtn"));
+            submitButton.Click();
+
+            Thread.Sleep(500);
+
+
+            // Create a WebDriverWait instance
+            WebDriverWait wait11 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+
+            // Find the div element containing the toast message
+            toastMessageElement2 = wait11.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
+
+            // Get the text within the div element
+            string toastMessage = toastMessageElement2.Text;
+
+
+            // Use the captured message as needed
+            Console.WriteLine("Toast Message: " + toastMessage);
+
+            TestContext.OrgPassword = newPassword;
+            Thread.Sleep(500);
+            Console.WriteLine("OrgPassword: " + TestContext.OrgPassword);
+            Thread.Sleep(1000);
+        }
+
+        [Test, Order(9)]
+        public void C_0_OrganizerLogin()
+        {
+            // URL of the login page
+            string loginUrl = MainURL + @"/login";
+
+            // Credentials for login
+            string username = TestContext.OrgUserName;
+            string password = TestContext.OrgPassword;
+
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+
+            // Open the login page
+            driver.Navigate().GoToUrl(loginUrl);
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
+            // Wait for the username field to be present
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(300));
+            IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
+
+            // Find the password input field and login button
+            IWebElement passwordField = driver.FindElement(By.Id("password"));
+            IWebElement loginButton = driver.FindElement(By.Id("loginBtn"));
+
+            // Input the username and password
+            usernameField.SendKeys(username);
+            passwordField.SendKeys(password);
+
+            // Perform the login action
+            loginButton.Click();
+
+            // Wait for the next page to load (you may need to adjust the timing)
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             // Use the captured message as needed
             Console.WriteLine("Oraginzer login successfully");
@@ -1128,29 +1343,29 @@ namespace SeleniumTest
             Thread.Sleep(1000);
 
             // Close the browser
-            driver.Quit();
+            //driver.Quit();
         }
 
-        [TestMethod]
+        [Test, Order(10)]
         public void C_1_OrganizerVenueCreate()
         {
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
-            string username = "BPUser1";
-            string password = "123";
+            string username = TestContext.OrgUserName;
+            string password = TestContext.OrgPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
-            
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
@@ -1167,7 +1382,7 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             Thread.Sleep(500);
 
@@ -1192,7 +1407,7 @@ namespace SeleniumTest
 
             WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
             // Wait for the next page to load (you may need to adjust the timing)
-            wait2.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/venue/venues")); // Replace "expectedPage" with part of the URL of the next page
+            wait2.Until(ExpectedConditions.UrlContains(MainURLWithoutTenant + @"/venue/venues")); // Replace "expectedPage" with part of the URL of the next page
 
             Thread.Sleep(500);
 
@@ -1207,7 +1422,7 @@ namespace SeleniumTest
 
             WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             // Wait for the next page to load (you may need to adjust the timing)
-            wait3.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/venue/venues")); // Replace "expectedPage" with part of the URL of the next page
+            wait3.Until(ExpectedConditions.UrlContains(MainURLWithoutTenant + @"/venue/venues")); // Replace "expectedPage" with part of the URL of the next page
 
 
             // Wait for the button to be clickable
@@ -1217,7 +1432,7 @@ namespace SeleniumTest
             createVenueButton.Click();
 
             // Initialize a counter
-            int counter = 0;
+            int counter = 20;
 
             bool userAdded = false;
 
@@ -1233,8 +1448,10 @@ namespace SeleniumTest
 
                 Thread.Sleep(500);
 
+                string venue = "BoardPACADOVenue_" + counter;
+
                 // Type the venue name into the input field
-                venueNameInput.SendKeys("BoardPACADOVenue_"+counter);
+                venueNameInput.SendKeys(venue);
 
                 Thread.Sleep(500);
 
@@ -1301,6 +1518,8 @@ namespace SeleniumTest
                     else
                     {
                         userAdded = true;
+                        TestContext.venue = venue;
+
                         Thread.Sleep(500);
 
                     }
@@ -1316,35 +1535,35 @@ namespace SeleniumTest
 
             WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             // Wait for the next page to load (you may need to adjust the timing)
-            wait8.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/venue/venues")); // Replace "expectedPage" with part of the URL of the next page
-                                                                                                                          // Wait for the next page to load (you may need to adjust the timing)
+            wait8.Until(ExpectedConditions.UrlContains(MainURLWithoutTenant + @"/venue/venues")); // Replace "expectedPage" with part of the URL of the next page
+                                                                                                  // Wait for the next page to load (you may need to adjust the timing)
             Thread.Sleep(1000);
 
             // Close the browser
-            driver.Quit();
+            //driver.Quit();
 
         }
 
-        [TestMethod]
+        [Test, Order(11)]
         public void C_2_OrganizerMeetingCreate()
         {
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
-            string username = "BPUser1";
-            string password = "123";
+            string username = TestContext.OrgUserName;
+            string password = TestContext.OrgPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
-
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
@@ -1361,7 +1580,7 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             Thread.Sleep(500);
 
@@ -1395,20 +1614,20 @@ namespace SeleniumTest
             {
                 // Click on the link to view users if it's clickable
                 viewUserLink.Click();
-                Console.WriteLine("Create Meeting clicked to expanded");
+                Console.WriteLine("Venue clicked to expanded");
                 Thread.Sleep(500);
             }
             else
             {
                 // Handle the situation where the link is not clickable
-                Console.WriteLine("Create Meeting link is not clickable.");
+                Console.WriteLine("Venue link is not clickable.");
                 // You can add further actions or error handling here if needed
             }
 
 
             WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             // Wait for the next page to load (you may need to adjust the timing)
-            wait2.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/meeting/createmeeting")); // Replace "expectedPage" with part of the URL of the next page
+            wait2.Until(ExpectedConditions.UrlContains(MainURLWithoutTenant + @"/meeting/createmeeting")); // Replace "expectedPage" with part of the URL of the next page
 
             Thread.Sleep(1500);
 
@@ -1417,15 +1636,17 @@ namespace SeleniumTest
 
             Thread.Sleep(500);
 
-            SelectCommittee(driver, wait3, "boardpactest");
+            SelectCommittee(driver, wait3, TestContext.committeeNameInput);
 
             Thread.Sleep(500);
 
-            SelectSubCommittee(driver, wait3, "boardpacsub");
+            SelectSubCommittee(driver, wait3, TestContext.subcommitteeNameInput);
 
             Thread.Sleep(500);
 
-            FillOrganizer(driver, wait3, "BPUserOne BoardPAC");
+            string FullName = TestContext.OrgFname + " " + TestContext.OrgLName;
+
+            FillOrganizer(driver, wait3, FullName);
 
             Thread.Sleep(500);
 
@@ -1449,15 +1670,15 @@ namespace SeleniumTest
 
             Thread.Sleep(500);
 
-            FillSearchLocation(driver, wait3, "BoardPACADOVenue_0");
+            FillSearchLocation(driver, TestContext.venue);
 
             Thread.Sleep(500);
 
-            FillMeetingRoom(driver, wait3, "BoardRoom");
+            FillMeetingRoom(driver, "BoardRoom");
 
             Thread.Sleep(500);
 
-            FillVideoConferencingOption(driver, wait3, "None");
+            FillVideoConferencingOption(driver, "None");
 
             Thread.Sleep(1500);
 
@@ -1485,35 +1706,35 @@ namespace SeleniumTest
 
             WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             // Wait for the next page to load (you may need to adjust the timing)
-            wait5.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
-                                                                                                                              // Wait for the next page to load (you may need to adjust the timing)
+            wait5.Until(ExpectedConditions.UrlContains(MainURLWithoutTenant + @"/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
+                                                                                                      // Wait for the next page to load (you may need to adjust the timing)
             Thread.Sleep(1000);
 
             // Close the browser
-            driver.Quit();
+            //driver.Quit();
 
         }
 
-        [TestMethod]
+        [Test, Order(12)]
         public void C_3_OrganizerMeetingschedule()
         {
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
-            string username = "BPUser1";
-            string password = "123";
+            string username = TestContext.OrgUserName;
+            string password = TestContext.OrgPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
-            // Open the login page
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            //// Open the login page
             driver.Navigate().GoToUrl(loginUrl);
-
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
@@ -1530,7 +1751,7 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             Thread.Sleep(500);
 
@@ -1577,7 +1798,7 @@ namespace SeleniumTest
 
             WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             // Wait for the next page to load (you may need to adjust the timing)
-            wait2.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
+            wait2.Until(ExpectedConditions.UrlContains(MainURLWithoutTenant + @"/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
 
             // Wait for the form to load
             WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
@@ -1592,12 +1813,12 @@ namespace SeleniumTest
             IWebElement searchInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input.form-control.search-input")));
 
             // Type the meeting name into the input field
-            string meetingName = "BPM12112023"; // Replace this with the actual meeting name
+            string meetingName = TestContext.MeetingTitle; // Replace this with the actual meeting name
             searchInput.SendKeys(meetingName);
-
+            Console.WriteLine("searched meeting title is:" + meetingName);
             // Set up WebDriverWait with a timeout of 10 seconds
             WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            
+
             // Wait for the table rows to be present
             ReadOnlyCollection<IWebElement> tableRows = wait5.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.CssSelector("tbody.ui-table-tbody > tr")));
 
@@ -1659,31 +1880,31 @@ namespace SeleniumTest
             Thread.Sleep(1000);
 
             // Close the browser
-            driver.Quit();
+            //driver.Quit();
 
 
         }
 
-        [TestMethod]
+        [Test, Order(13)]
         public void C_4_OrganizerAgendaUpload()
         {
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
-            string username = "BPUser1";
-            string password = "123";
+            string username = TestContext.OrgUserName;
+            string password = TestContext.OrgPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
             // Open the login page
             driver.Navigate().GoToUrl(loginUrl);
-
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
@@ -1700,7 +1921,7 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             Thread.Sleep(500);
 
@@ -1747,7 +1968,7 @@ namespace SeleniumTest
 
             WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             // Wait for the next page to load (you may need to adjust the timing)
-            wait2.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
+            wait2.Until(ExpectedConditions.UrlContains(MainURLWithoutTenant + @"/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
 
             // Wait for the form to load
             WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
@@ -1762,9 +1983,9 @@ namespace SeleniumTest
             IWebElement searchInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input.form-control.search-input")));
 
             // Type the meeting name into the input field
-            string meetingName = "BPM12112023"; // Replace this with the actual meeting name
+            string meetingName = TestContext.MeetingTitle; // Replace this with the actual meeting name
             searchInput.SendKeys(meetingName);
-
+            Console.WriteLine("searched meeting title is:" + meetingName);
             Thread.Sleep(1000);
 
             // Set up WebDriverWait with a timeout of 10 seconds
@@ -1785,7 +2006,7 @@ namespace SeleniumTest
             Thread.Sleep(500);
 
             // Wait for the URL to match the expected pattern
-            wait4.Until(driver => driver.Url.StartsWith("https://azuredevops.boardpaconline.com/WebClient/meeting/agenda"));
+            wait4.Until(driver1 => driver.Url.StartsWith(MainURLWithoutTenant + @"/meeting/agenda"));
 
             Thread.Sleep(500);
 
@@ -1799,7 +2020,7 @@ namespace SeleniumTest
             uploadButton.Click();
 
             string solutionDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../");
-            string folderPathRelativeToSolution = @"UploadDoc/TestDoc";
+            string folderPathRelativeToSolution = @"SeleniumTest/UploadDoc/TestDoc";
 
             string folderAbsolutePath = Path.Combine(solutionDirectory, folderPathRelativeToSolution);
 
@@ -1808,7 +2029,7 @@ namespace SeleniumTest
 
             string path = "TestDoc" + GetCurrentFormattedDate();
             // Specify the destination folder path in the C drive
-            string destinationFolderPath = @"C:\"+path+@"\Agenda";
+            string destinationFolderPath = @"C:\" + path + @"\Agenda";
 
             // Copy the folder and its contents recursively to the destination
             CopyFolder(sourceFolderPath, destinationFolderPath);
@@ -1847,7 +2068,7 @@ namespace SeleniumTest
             IJavaScriptExecutor js1 = (IJavaScriptExecutor)driver;
             js1.ExecuteScript("arguments[0].click();", uploadButton2);
 
-            Thread.Sleep(3000);
+            Thread.Sleep(1500);
             // Click the upload button
 
 
@@ -1867,34 +2088,34 @@ namespace SeleniumTest
             Thread.Sleep(1000);
 
             // Close the browser
-            driver.Quit();
+            // driver.Quit();
 
 
 
         }
 
-        [TestMethod]
-        public void C_4_OrganizerDownloadPAckDownload()
+        [Test, Order(14)]
+        public void C_5_OrganizerDocumentPackDownload()
         {
             // URL of the login page
-            string loginUrl = "https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/login";
+            string loginUrl = MainURL + @"/login";
 
             // Credentials for login
-            string username = "BPUser1";
-            string password = "123";
+            string username = TestContext.OrgUserName;
+            string password = TestContext.OrgPassword;
 
-            // Initialize Chrome Driver
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
-            chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
-            driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
-            // Open the login page
+            //// Initialize Chrome Driver
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+            //IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            //driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080); // Set a standard window size
+            //driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(600);
+            //// Open the login page
             driver.Navigate().GoToUrl(loginUrl);
 
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -1909,7 +2130,7 @@ namespace SeleniumTest
             loginButton.Click();
 
             // Wait for the next page to load (you may need to adjust the timing)
-            wait.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/AzureDevOpsStaging/home")); // Replace "expectedPage" with part of the URL of the next page
+            wait.Until(ExpectedConditions.UrlContains(MainURL + @"/home")); // Replace "expectedPage" with part of the URL of the next page
 
             Thread.Sleep(500);
 
@@ -1956,7 +2177,7 @@ namespace SeleniumTest
 
             WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             // Wait for the next page to load (you may need to adjust the timing)
-            wait2.Until(ExpectedConditions.UrlContains("https://azuredevops.boardpaconline.com/WebClient/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
+            wait2.Until(ExpectedConditions.UrlContains(MainURLWithoutTenant + @"/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
 
             // Wait for the form to load
             WebDriverWait wait3 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
@@ -1969,10 +2190,11 @@ namespace SeleniumTest
 
             // Find the input field by its class name
             IWebElement searchInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input.form-control.search-input")));
-
+            //TestContext.MeetingTitle
             // Type the meeting name into the input field
-            string meetingName = "BPM12112023"; // Replace this with the actual meeting name
+            string meetingName = TestContext.MeetingTitle; // Replace this with the actual meeting name
             searchInput.SendKeys(meetingName);
+            Console.WriteLine("searched meeting title is:" + meetingName);
 
             Thread.Sleep(500);
             // Set up WebDriverWait with a timeout of 10 seconds
@@ -1993,7 +2215,7 @@ namespace SeleniumTest
             Thread.Sleep(500);
 
             // Wait for the URL to match the expected pattern
-            wait4.Until(driver => driver.Url.StartsWith("https://azuredevops.boardpaconline.com/WebClient/meeting/agenda"));
+            wait4.Until(driver1 => driver.Url.StartsWith(MainURLWithoutTenant + @"/meeting/agenda"));
 
             Thread.Sleep(500);
 
@@ -2012,7 +2234,18 @@ namespace SeleniumTest
             // For instance, to click the button
             buttonWithIcon.Click();
             Console.WriteLine("document pack download button clicked");
-            Thread.Sleep(1500);
+            Thread.Sleep(2500);
+
+            // Set up WebDriverWait with a timeout of 10 seconds
+            WebDriverWait wait6 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+
+            // Define the expected condition for the dialog box to be present
+            By dialogBoxLocator = By.ClassName("ui-dialog-mask");
+
+            // Wait for the dialog box to be present on the page
+            wait6.Until(ExpectedConditions.ElementIsVisible(dialogBoxLocator));
+
+            Thread.Sleep(2000);
             // Find the download button by its ID
             IWebElement downloadButton = driver.FindElement(By.Id("submitBtn"));
 
@@ -2023,7 +2256,7 @@ namespace SeleniumTest
             Thread.Sleep(2000);
 
             // Close the browser
-            driver.Quit();
+            //driver.Quit();
 
         }
 
@@ -2080,6 +2313,7 @@ namespace SeleniumTest
         static void InsertFirstName(IWebDriver driver, string firstName)
         {
             IWebElement firstNameInput = driver.FindElement(By.Id("firstName"));
+            firstNameInput.Clear();
             firstNameInput.SendKeys(firstName);
             Console.WriteLine("add the firstName");
         }
@@ -2087,6 +2321,7 @@ namespace SeleniumTest
         static void InsertLastName(IWebDriver driver, string lastName)
         {
             IWebElement lastNameInput = driver.FindElement(By.Id("lastName"));
+            lastNameInput.Clear();
             lastNameInput.SendKeys(lastName);
             Console.WriteLine("add the lastName");
         }
@@ -2099,7 +2334,7 @@ namespace SeleniumTest
         }
 
         static void InsertDeviceDisplayName(IWebDriver driver, string deviceDisplayName)
-        {            
+        {
             IWebElement deviceDisplayNameInput = driver.FindElement(By.Id("displayName"));
 
             // Clear the existing value
@@ -2136,6 +2371,8 @@ namespace SeleniumTest
         {
             string titlenew = title + GetCurrentFormattedDate();
             IWebElement titleInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input#title")));
+            TestContext.MeetingTitle = titlenew;
+            Console.WriteLine("searched meeting title is set to variable:" + TestContext.MeetingTitle);
             titleInput.SendKeys(titlenew);
         }
 
@@ -2202,16 +2439,16 @@ namespace SeleniumTest
                 // You might add additional handling or logging here
                 throw; // Re-throw the exception to indicate test failure
             }
-        }        
+        }
 
-         static void FillMeetingDate(IWebDriver driver, string desiredDate, string desiredMonth, string desiredYear)
-        {          
+        static void FillMeetingDate(IWebDriver driver, string desiredDate, string desiredMonth, string desiredYear)
+        {
 
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
 
             // Find the datepicker element by its ID
             IWebElement datepicker = driver.FindElement(By.Id("ej2-datepicker_0_input"));
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
             // Click on the datepicker to open the calendar
             datepicker.Click();
             Thread.Sleep(500);
@@ -2279,16 +2516,18 @@ namespace SeleniumTest
             }
         }
 
-        static void FillSearchLocation(IWebDriver driver, WebDriverWait wait, string location)
+        static void FillSearchLocation(IWebDriver driver, string location)
         {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             // Locate the dropdown element
             IWebElement dropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='venue']")));
 
             // Click the dropdown to open options
             dropdown.Click();
-            Thread.Sleep(500);
             // Find the desired option element by its text
             string itemToSelect = location;
+            Console.WriteLine("meeting location title is set to variable:" + itemToSelect);
+            Thread.Sleep(500);
             By optionLocator = By.XPath($"//div[contains(@class, 'country-item')]//*[contains(text(), '{itemToSelect}')]");
             Thread.Sleep(500);
 
@@ -2310,10 +2549,11 @@ namespace SeleniumTest
             }
         }
 
-        static void FillMeetingRoom(IWebDriver driver, WebDriverWait wait, string meetingRoom)
+        static void FillMeetingRoom(IWebDriver driver, string meetingRoom)
         {
-            Thread.Sleep(500);
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             IWebElement meetingRoomDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='meetingRoom']")));
+            Thread.Sleep(1000);
             meetingRoomDropdown.Click();
             Thread.Sleep(1000);
             // Find the desired option element by its text
@@ -2340,9 +2580,9 @@ namespace SeleniumTest
 
         }
 
-        static void FillVideoConferencingOption(IWebDriver driver, WebDriverWait wait, string option)
+        static void FillVideoConferencingOption(IWebDriver driver, string option)
         {
-            Thread.Sleep(500);
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             IWebElement videoConferencingDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='videoConferencingList']")));
             videoConferencingDropdown.Click();
             Thread.Sleep(1000);
@@ -2374,5 +2614,13 @@ namespace SeleniumTest
                 CopyFolder(subFolder, destFolder);
             }
         }
+
+        [TearDown]
+        public void Teardown()
+        {
+            // Quit the WebDriver session after all tests
+            driver.Quit();
+        }
+
     }
 }
