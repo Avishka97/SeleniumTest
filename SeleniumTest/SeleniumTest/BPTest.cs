@@ -78,7 +78,7 @@ namespace SeleniumTest
         {
             // Initialize Chrome Driver
             chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--headless");
             //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
             chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
             driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
@@ -108,7 +108,7 @@ namespace SeleniumTest
             driver.Navigate().GoToUrl(loginUrl);
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -157,7 +157,7 @@ namespace SeleniumTest
             driver.Navigate().GoToUrl(loginUrl);
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -244,7 +244,7 @@ namespace SeleniumTest
             driver.Navigate().GoToUrl(loginUrl);
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -293,7 +293,7 @@ namespace SeleniumTest
             driver.Navigate().GoToUrl(loginUrl);
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -386,7 +386,7 @@ namespace SeleniumTest
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200); // Set page load timeout to 60 seconds (example)
 
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -669,7 +669,7 @@ namespace SeleniumTest
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200); // Set page load timeout to 60 seconds (example)
 
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -890,7 +890,7 @@ namespace SeleniumTest
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200); // Set page load timeout to 60 seconds (example)
 
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -1225,7 +1225,7 @@ namespace SeleniumTest
             driver.Navigate().GoToUrl(loginUrl);
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -1317,7 +1317,7 @@ namespace SeleniumTest
             driver.Navigate().GoToUrl(loginUrl);
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -1366,7 +1366,7 @@ namespace SeleniumTest
             driver.Navigate().GoToUrl(loginUrl);
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -1567,7 +1567,7 @@ namespace SeleniumTest
             driver.Navigate().GoToUrl(loginUrl);
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -1739,7 +1739,7 @@ namespace SeleniumTest
             driver.Navigate().GoToUrl(loginUrl);
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -1913,7 +1913,7 @@ namespace SeleniumTest
             driver.Navigate().GoToUrl(loginUrl);
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
             // Wait for the username field to be present
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1200));
             IWebElement usernameField = wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username")));
 
             // Find the password input field and login button
@@ -2575,34 +2575,6 @@ namespace SeleniumTest
 
         static void FillMeetingRoom(IWebDriver driver, string meetingRoom)
         {
-            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
-            //IWebElement meetingRoomDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='meetingRoom']")));
-            //Thread.Sleep(500);
-            //meetingRoomDropdown.Click();
-            //Thread.Sleep(500);
-            //// Find the desired option element by its text
-            //string itemToSelect = meetingRoom;
-            //By optionLocator = By.XPath($"//div[contains(@class, 'country-item')]//*[contains(text(), '{itemToSelect}')]");
-            //Thread.Sleep(500);
-            
-            //try
-            //{
-            //    IWebElement option = wait.Until(ExpectedConditions.ElementToBeClickable(optionLocator));
-            //    Thread.Sleep(500);
-            //    // Click the option to select it
-            //    option.Click();
-            //    Thread.Sleep(500);
-
-            //    // Perform actions with the selected option if needed
-            //    // ...
-            //}
-            //catch (WebDriverTimeoutException ex)
-            //{
-            //    Console.WriteLine("Element not found within the specified timeframe.");
-            //    Console.WriteLine(ex.ToString());
-            //}
-
-
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
 
             try
