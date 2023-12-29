@@ -48,6 +48,7 @@ namespace SeleniumTest
         private string SysadminPassword;
         private string BoardAdminPassword;
         private string DefaultPassword;
+        private string ArtifactDownloadPath;
         private IWebDriver driver;
         private ChromeOptions chromeOptions;
         public  BPTest()
@@ -62,6 +63,7 @@ namespace SeleniumTest
             SysadminPassword = _configuration["AppSettings:SysadminPassword"];
             BoardAdminPassword = _configuration["AppSettings:BoardAdminPassword"];
             DefaultPassword = _configuration["AppSettings:DefaultPassword"];
+            ArtifactDownloadPath = _configuration["AppSettings:ArtifactDownloadPath"];
         }
 
         
@@ -2019,8 +2021,9 @@ namespace SeleniumTest
             // Click the upload button
             uploadButton.Click();
 
+            string artifactlocation = ArtifactDownloadPath;
             string solutionDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../");
-            string folderPathRelativeToSolution = @"SeleniumTest/UploadDoc/TestDoc";
+            string folderPathRelativeToSolution = artifactlocation;
 
             string folderAbsolutePath = Path.Combine(solutionDirectory, folderPathRelativeToSolution);
 
