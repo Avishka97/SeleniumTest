@@ -2024,19 +2024,20 @@ namespace SeleniumTest
             string artifactlocation = ArtifactDownloadPath;
             string solutionDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../");
             string folderPathRelativeToSolution = artifactlocation;
-
+            Console.WriteLine("Artifact Path: " + folderPathRelativeToSolution);
             string folderAbsolutePath = Path.Combine(solutionDirectory, folderPathRelativeToSolution);
+            Console.WriteLine("Aftifact full path: " + folderAbsolutePath);
 
             // Specify the source folder path (inside the solution directory)
             string sourceFolderPath = Path.Combine(folderAbsolutePath, "Agenda");
-
+            Console.WriteLine("Aftifact full path for source: " + sourceFolderPath);
             string path = "TestDoc" + GetCurrentFormattedDate();
             // Specify the destination folder path in the C drive
             string destinationFolderPath = @"C:\" + path + @"\Agenda";
-
+            Console.WriteLine("destinationFolderPath: " + destinationFolderPath);
             // Copy the folder and its contents recursively to the destination
             CopyFolder(sourceFolderPath, destinationFolderPath);
-
+            Console.WriteLine("copy files to destination server");
             WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
             Thread.Sleep(2000);
@@ -2047,22 +2048,15 @@ namespace SeleniumTest
             Thread.Sleep(2000);
             // Send the folder path to the file input element
             fileInput.SendKeys(destinationFolderPath);
-
+            Console.WriteLine("start uploading files");
             Thread.Sleep(2000);
             IWebElement toastMessageElement2 = null;
             //// Find the checkbox element by its ID
             IWebElement publishAllCheckbox = driver.FindElement(By.Id("inlineCheckbox1"));
-            ////Thread.Sleep(2500);
-            //// Check the checkbox if it's not already selected
-            //if (!publishAllCheckbox.Selected)
-            //{
-            //   //Thread.Sleep(1500);
-            //    publishAllCheckbox.Click();
-            //}
-
+            
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
             js.ExecuteScript("arguments[0].click();", publishAllCheckbox);
-
+            Console.WriteLine("clicked on publish button");
 
             Thread.Sleep(500);
             // Find the upload button by its ID
@@ -2070,17 +2064,17 @@ namespace SeleniumTest
 
             IJavaScriptExecutor js1 = (IJavaScriptExecutor)driver;
             js1.ExecuteScript("arguments[0].click();", uploadButton2);
-
-            Thread.Sleep(1500);
+            Console.WriteLine("clicked on submit button");
+            Thread.Sleep(1000);
             // Click the upload button
-
+            Console.WriteLine("waiting for toaste message");
 
             // Create a WebDriverWait instance
-            WebDriverWait wait11 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+            WebDriverWait wait11 = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
 
             // Find the div element containing the toast message
             toastMessageElement2 = wait11.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
-
+            Console.WriteLine("found the toaste message");
             // Get the text within the div element
             string toastMessage = toastMessageElement2.Text;
 
