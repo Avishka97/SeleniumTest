@@ -78,7 +78,7 @@ namespace SeleniumTest
         {
             // Initialize Chrome Driver
             chromeOptions = new ChromeOptions();
-            //chromeOptions.AddArgument("--headless");
+            chromeOptions.AddArgument("--headless");
             //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
             chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
             driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
@@ -129,7 +129,7 @@ namespace SeleniumTest
             Console.WriteLine("sysadmin login successfully");
 
             // You can add further actions after successful login here
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Close the browser
             //driver.Quit();
@@ -207,7 +207,7 @@ namespace SeleniumTest
             Console.WriteLine("Toast Message2: " + toastMessage);
 
 
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Find and click on the "Logout" button  
             IWebElement logoutButton = driver.FindElement(By.CssSelector("li.nav-item.logged-in-ic-wrapper"));
@@ -216,7 +216,7 @@ namespace SeleniumTest
 
 
             // Wait for the next page to load (you may need to adjust the timing)
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Close the browser
             //driver.Quit();
@@ -265,7 +265,7 @@ namespace SeleniumTest
             Console.WriteLine("boardadmin login successfully");
 
             // You can add further actions after successful login here
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Close the browser
             //driver.Quit();
@@ -345,7 +345,7 @@ namespace SeleniumTest
             Console.WriteLine("Toast Message2: " + toastMessage);
 
             // Wait for the next page to load (you may need to adjust the timing)
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Find and click on the "Logout" button  
             IWebElement logoutButton = driver.FindElement(By.CssSelector("li.nav-item.logged-in-ic-wrapper"));
@@ -354,7 +354,7 @@ namespace SeleniumTest
 
 
             // Wait for the next page to load (you may need to adjust the timing)
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Close the browser
             //driver.Quit();
@@ -410,7 +410,7 @@ namespace SeleniumTest
             string baseOrgDisplayName = "BPBoardPAC";
 
             // Initialize a counter
-            int counter = 20;
+            int counter =50;
 
             bool userAdded = false;
 
@@ -548,22 +548,18 @@ namespace SeleniumTest
 
                     Thread.Sleep(200);
 
-
+                    IWebElement toastMessageElement = null;
 
                     // Click the submit button (assuming it's initially disabled)
                     IWebElement submitButton = driver.FindElement(By.Id("submitBtn"));
                     if (submitButton.Enabled)
                     {
-                        submitButton.Click();
-                        Thread.Sleep(500);
-
-
-                        IWebElement toastMessageElement = null;
+                        submitButton.Click();                      
 
                         try
                         {
                             // Create a WebDriverWait instance
-                            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+                            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
 
                             // Find the div element containing the toast message
                             toastMessageElement = wait5.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
@@ -615,7 +611,7 @@ namespace SeleniumTest
                             Console.WriteLine("Toast Message: " + toastMessage);
 
                             // Wait for the next page to load (you may need to adjust the timing)
-                            Thread.Sleep(6000);
+                            Thread.Sleep(1000);
 
                             // Close the browser
                             //driver.Quit();
@@ -641,7 +637,7 @@ namespace SeleniumTest
 
 
             // Wait for the next page to load (you may need to adjust the timing)
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Close the browser
             //driver.Quit();
@@ -776,12 +772,12 @@ namespace SeleniumTest
             Console.WriteLine("OrgDisplayName: " + OrgDisplayName2);
             Console.WriteLine("OrgLName: " + OrgLName2);
 
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
             // Perform other actions after the URL matches the pattern...
             InsertDeviceDisplayName(driver, OrgDisplayName2);
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
             InsertLastName(driver, OrgLName2);
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             TestContext.OrgLName = OrgLName2;
             TestContext.OrgDisplayName = OrgDisplayName2;
@@ -827,7 +823,7 @@ namespace SeleniumTest
 
 
                         // Wait for the next page to load (you may need to adjust the timing)
-                        Thread.Sleep(6000);
+                        Thread.Sleep(1000);
 
                         // Close the browser
                         //driver.Quit();
@@ -838,7 +834,7 @@ namespace SeleniumTest
                         Console.WriteLine("Toast Message: " + toastMessage);
 
                         // Wait for the next page to load (you may need to adjust the timing)
-                        Thread.Sleep(6000);
+                        Thread.Sleep(1000);
 
                         // Close the browser
                         //driver.Quit();
@@ -858,7 +854,7 @@ namespace SeleniumTest
                     Console.WriteLine("Toast Message: " + toastMessage);
 
                     // Wait for the next page to load (you may need to adjust the timing)
-                    Thread.Sleep(6000);
+                    Thread.Sleep(1000);
 
                     // Close the browser
                     //driver.Quit();
@@ -942,7 +938,7 @@ namespace SeleniumTest
 
 
             // Initialize a counter
-            int counter = 50;
+            int counter = 80;
 
             bool userAdded = false;
 
@@ -1126,7 +1122,7 @@ namespace SeleniumTest
             // Click the dropdown to open options
             dropdownElement1.Click();
 
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Replace with appropriate selectors
             var searchInput1 = driver.FindElement(By.CssSelector(".ui-multiselect-filter-container input[type='text']"));
@@ -1141,7 +1137,7 @@ namespace SeleniumTest
 
             Console.WriteLine("FnameLname: " + FnameLname);
 
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Wait for the options to filter based on search
             WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
@@ -1200,7 +1196,7 @@ namespace SeleniumTest
             // Use the captured message as needed
             Console.WriteLine("Toast Message2: " + toastMessage);
 
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Close the browser
             //driver.Quit();
@@ -1297,7 +1293,7 @@ namespace SeleniumTest
             TestContext.OrgPassword = newPassword;
             Thread.Sleep(500);
             Console.WriteLine("OrgPassword: " + TestContext.OrgPassword);
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
         }
 
         [Test, Order(9)]
@@ -1342,7 +1338,7 @@ namespace SeleniumTest
             Console.WriteLine("Oraginzer login successfully");
 
             // You can add further actions after successful login here
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Close the browser
             //driver.Quit();
@@ -1435,7 +1431,7 @@ namespace SeleniumTest
             createVenueButton.Click();
 
             // Initialize a counter
-            int counter = 20;
+            int counter =50;
 
             bool userAdded = false;
 
@@ -1485,7 +1481,7 @@ namespace SeleniumTest
                 Actions action = new Actions(driver);
                 action.SendKeys(Keys.Enter).Perform();
 
-                Thread.Sleep(6000);
+                Thread.Sleep(1000);
 
                 WebDriverWait wait6 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
 
@@ -1540,7 +1536,7 @@ namespace SeleniumTest
             // Wait for the next page to load (you may need to adjust the timing)
             wait8.Until(ExpectedConditions.UrlContains(MainURLWithoutTenant + @"/venue/venues")); // Replace "expectedPage" with part of the URL of the next page
                                                                                                   // Wait for the next page to load (you may need to adjust the timing)
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Close the browser
             //driver.Quit();
@@ -1557,7 +1553,7 @@ namespace SeleniumTest
             string username = TestContext.OrgUserName;
             string password = TestContext.OrgPassword;
 
-            //string username = "BP1229202323";
+            //string username = "BP1229202350";
             //string password = "Qwerty$4.0";
 
             //// Initialize Chrome Driver
@@ -1643,7 +1639,7 @@ namespace SeleniumTest
             Thread.Sleep(500);
 
             SelectCommittee(driver, wait3, TestContext.committeeNameInput);
-            //SelectCommittee(driver, wait3, "BPCommittee12292023_57");
+            //SelectCommittee(driver, wait3, "BPCommittee12292023_80");
             Thread.Sleep(500);
 
             SelectSubCommittee(driver, wait3, TestContext.subcommitteeNameInput);
@@ -1653,7 +1649,7 @@ namespace SeleniumTest
             string FullName = TestContext.OrgFname + " " + TestContext.OrgLName;
 
             FillOrganizer(driver, wait3, FullName);
-            //FillOrganizer(driver, wait3, "BP23 BoardPAC23A");
+            //FillOrganizer(driver, wait3, "BP50 BoardPAC50A");
 
             Thread.Sleep(500);
 
@@ -1678,7 +1674,7 @@ namespace SeleniumTest
             Thread.Sleep(500);
 
             FillSearchLocation(driver, TestContext.venue);
-            //FillSearchLocation(driver, "BoardPACADOVenue_12292023_26");
+            //FillSearchLocation(driver, "BoardPACADOVenue_12292023_50");
             Thread.Sleep(500);
 
             FillMeetingRoom(driver, "BoardRoom");
@@ -1715,7 +1711,7 @@ namespace SeleniumTest
             // Wait for the next page to load (you may need to adjust the timing)
             wait5.Until(ExpectedConditions.UrlContains(MainURLWithoutTenant + @"/meeting/meetings")); // Replace "expectedPage" with part of the URL of the next page
                                                                                                       // Wait for the next page to load (you may need to adjust the timing)
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Close the browser
             //driver.Quit();
@@ -1884,7 +1880,7 @@ namespace SeleniumTest
             Console.WriteLine("Toast Message2: " + toastMessage);
 
             // Wait for the next page to load (you may need to adjust the timing)
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Close the browser
             //driver.Quit();
@@ -1901,6 +1897,10 @@ namespace SeleniumTest
             // Credentials for login
             string username = TestContext.OrgUserName;
             string password = TestContext.OrgPassword;
+
+            //string username = "BP1229202350";
+            //string password = "Qwerty$4.0";
+
 
             //// Initialize Chrome Driver
             //var chromeOptions = new ChromeOptions();
@@ -1991,9 +1991,11 @@ namespace SeleniumTest
 
             // Type the meeting name into the input field
             string meetingName = TestContext.MeetingTitle; // Replace this with the actual meeting name
+            //string meetingName = "BPM12292023";
+
             searchInput.SendKeys(meetingName);
             Console.WriteLine("searched meeting title is:" + meetingName);
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Set up WebDriverWait with a timeout of 60 seconds
             WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
@@ -2070,12 +2072,21 @@ namespace SeleniumTest
             IJavaScriptExecutor js1 = (IJavaScriptExecutor)driver;
             js1.ExecuteScript("arguments[0].click();", uploadButton2);
             Console.WriteLine("clicked on submit button");
-            Thread.Sleep(500);
-            // Click the upload button
+
+            WebDriverWait wait12 = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
+
+            // Wait for the modal to be present in the DOM
+            IWebElement modal = wait12.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".modal.fade")));
+            Console.WriteLine("Modal is visible");
+
+            // Wait for the modal to disappear
+            wait12.Until(ExpectedConditions.InvisibilityOfElementLocated(By.CssSelector(".modal.fade")));
+            Console.WriteLine("Modal has disappeared");
+
             Console.WriteLine("waiting for toaste message");
 
             // Create a WebDriverWait instance
-            WebDriverWait wait11 = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
+            WebDriverWait wait11 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
 
             // Find the div element containing the toast message
             toastMessageElement2 = wait11.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
@@ -2087,7 +2098,7 @@ namespace SeleniumTest
             // Use the captured message as needed
             Console.WriteLine("Toast Message: " + toastMessage);
 
-            Thread.Sleep(6000);
+            Thread.Sleep(1000);
 
             // Close the browser
             // driver.Quit();
@@ -2105,6 +2116,10 @@ namespace SeleniumTest
             // Credentials for login
             string username = TestContext.OrgUserName;
             string password = TestContext.OrgPassword;
+
+            //string username = "BP1229202350";
+            //string password = "Qwerty$4.0";
+
 
             //// Initialize Chrome Driver
             //var chromeOptions = new ChromeOptions();
@@ -2195,6 +2210,9 @@ namespace SeleniumTest
             //TestContext.MeetingTitle
             // Type the meeting name into the input field
             string meetingName = TestContext.MeetingTitle; // Replace this with the actual meeting name
+
+            //string meetingName = "BPM12292023";
+
             searchInput.SendKeys(meetingName);
             Console.WriteLine("searched meeting title is:" + meetingName);
 
@@ -2247,7 +2265,12 @@ namespace SeleniumTest
             // Wait for the dialog box to be present on the page
             wait6.Until(ExpectedConditions.ElementIsVisible(dialogBoxLocator));
 
-            Thread.Sleep(6000);
+            WebDriverWait wait7 = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
+
+            // Wait for the success ring to be present in the DOM
+            IWebElement successRing = wait7.Until(ExpectedConditions.ElementExists(By.CssSelector(".swal2-success-ring")));
+            Console.WriteLine("Success ring appeared");
+
             // Find the download button by its ID
             IWebElement downloadButton = driver.FindElement(By.Id("submitBtn"));
 
@@ -2255,7 +2278,7 @@ namespace SeleniumTest
             downloadButton.Click();
             Console.WriteLine("download button clicked");
 
-            Thread.Sleep(2000);
+            Thread.Sleep(3000);
 
             // Close the browser
             //driver.Quit();
@@ -2407,8 +2430,9 @@ namespace SeleniumTest
         }
 
         static void FillTimeZone(IWebDriver driver, string timezone)
-        {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60)); // Increased wait time
+        {           
+
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
 
             try
             {
@@ -2416,32 +2440,26 @@ namespace SeleniumTest
                 IWebElement timezoneDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='timeZone']")));
                 timezoneDropdown.Click();
                 Thread.Sleep(500);
-                // Wait for the options to load
-                wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.CssSelector("ul.ui-dropdown-items li span")));
 
-                // Find all the options
-                IList<IWebElement> options = driver.FindElements(By.CssSelector("ul.ui-dropdown-items li span"));
+                // Find the search input field
+                IWebElement searchInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".ui-dropdown-filter-container input.ui-dropdown-filter")));
 
-                // Locate the specific timezone option and click it
-                foreach (IWebElement option in options)
-                {
-                    if (option.Text.Trim().Equals(timezone))
-                    {
-                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", option); // Scroll into view if needed
-                        Thread.Sleep(500);
-                        option.Click();
-                        break;
-                    }
-                }
+                // Type the timezone in the search bar
+                searchInput.SendKeys(timezone);
+                Thread.Sleep(1000); // Adjust the delay if necessary to ensure the dropdown filters properly
+
+                // Click on the filtered option
+                IWebElement filteredOption = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath($"//span[contains(text(),'{timezone}')]")));
+                filteredOption.Click();
             }
             catch (WebDriverTimeoutException ex)
             {
-                // Print the page source or relevant information for debugging
+                // Error handling and logging
                 Console.WriteLine(driver.PageSource);
                 Console.WriteLine("Exception: " + ex.Message);
-                // You might add additional handling or logging here
                 throw; // Re-throw the exception to indicate test failure
             }
+
         }
 
         static void FillMeetingDate(IWebDriver driver, string desiredDate, string desiredMonth, string desiredYear)
@@ -2521,32 +2539,26 @@ namespace SeleniumTest
         }
 
         static void FillSearchLocation(IWebDriver driver, string location)
-        {
+        {            
+
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
-            // Locate the dropdown element
-            IWebElement dropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='venue']")));
-
-            // Click the dropdown to open options
-            dropdown.Click();
-            Console.WriteLine("Venue dropdown clicked");
-            // Find the desired option element by its text
-            string itemToSelect = location;
-
-            Console.WriteLine("Venue name:"+ itemToSelect);
-            Thread.Sleep(500);
-
-            Console.WriteLine("starting to find the venue");
-            By optionLocator = By.XPath($"//div[contains(@class, 'country-item')]//*[contains(text(), '{itemToSelect}')]");
-            Thread.Sleep(500);
 
             try
             {
-                IWebElement option = wait.Until(ExpectedConditions.ElementToBeClickable(optionLocator));
-                Thread.Sleep(500);
-                // Click the option to select it
-                option.Click();
+                // Click on the venue dropdown to open options
+                IWebElement dropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='venue']")));
+                dropdown.Click();
+                Console.WriteLine("Venue dropdown clicked");
+
+                // Locate the search input field
+                IWebElement searchInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".ui-dropdown-filter-container input.ui-dropdown-filter")));
+                searchInput.SendKeys(location);
+                Thread.Sleep(1000); // Adjust delay if necessary for the dropdown to filter properly
+
+                // Click the filtered option
+                IWebElement filteredOption = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath($"//div[contains(@class, 'country-item')]//*[contains(text(), '{location}')]")));
+                filteredOption.Click();
                 Console.WriteLine("Venue clicked");
-                Thread.Sleep(500);
 
                 // Perform actions with the selected option if needed
                 // ...
@@ -2555,28 +2567,60 @@ namespace SeleniumTest
             {
                 Console.WriteLine("Element not found within the specified timeframe.");
                 Console.WriteLine(ex.ToString());
+                // Handle the exception or throw it to indicate test failure
+                throw;
             }
+
         }
 
         static void FillMeetingRoom(IWebDriver driver, string meetingRoom)
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
-            IWebElement meetingRoomDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='meetingRoom']")));
-            Thread.Sleep(6000);
-            meetingRoomDropdown.Click();
-            Thread.Sleep(6000);
-            // Find the desired option element by its text
-            string itemToSelect = meetingRoom;
-            By optionLocator = By.XPath($"//div[contains(@class, 'country-item')]//*[contains(text(), '{itemToSelect}')]");
-            Thread.Sleep(1500);
+            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
+            //IWebElement meetingRoomDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='meetingRoom']")));
+            //Thread.Sleep(500);
+            //meetingRoomDropdown.Click();
+            //Thread.Sleep(500);
+            //// Find the desired option element by its text
+            //string itemToSelect = meetingRoom;
+            //By optionLocator = By.XPath($"//div[contains(@class, 'country-item')]//*[contains(text(), '{itemToSelect}')]");
+            //Thread.Sleep(500);
+            
+            //try
+            //{
+            //    IWebElement option = wait.Until(ExpectedConditions.ElementToBeClickable(optionLocator));
+            //    Thread.Sleep(500);
+            //    // Click the option to select it
+            //    option.Click();
+            //    Thread.Sleep(500);
+
+            //    // Perform actions with the selected option if needed
+            //    // ...
+            //}
+            //catch (WebDriverTimeoutException ex)
+            //{
+            //    Console.WriteLine("Element not found within the specified timeframe.");
+            //    Console.WriteLine(ex.ToString());
+            //}
+
+
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
 
             try
             {
-                IWebElement option = wait.Until(ExpectedConditions.ElementToBeClickable(optionLocator));
-                Thread.Sleep(500);
-                // Click the option to select it
-                option.Click();
-                Thread.Sleep(500);
+                // Click on the meeting room dropdown to open options
+                IWebElement meetingRoomDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='meetingRoom']")));
+                meetingRoomDropdown.Click();
+                Console.WriteLine("Meeting room dropdown clicked");
+
+                // Locate the search input field
+                IWebElement searchInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".ui-dropdown-filter-container input.ui-dropdown-filter")));
+                searchInput.SendKeys(meetingRoom);
+                Thread.Sleep(1000); // Adjust delay if necessary for the dropdown to filter properly
+
+                // Click the filtered option
+                IWebElement filteredOption = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath($"//div[contains(@class, 'country-item')]//*[contains(text(), '{meetingRoom}')]")));
+                filteredOption.Click();
+                Console.WriteLine("Meeting room clicked");
 
                 // Perform actions with the selected option if needed
                 // ...
@@ -2585,6 +2629,8 @@ namespace SeleniumTest
             {
                 Console.WriteLine("Element not found within the specified timeframe.");
                 Console.WriteLine(ex.ToString());
+                // Handle the exception or throw it to indicate test failure
+                throw;
             }
 
         }
@@ -2594,7 +2640,7 @@ namespace SeleniumTest
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             IWebElement videoConferencingDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("p-dropdown[formcontrolname='videoConferencingList']")));
             videoConferencingDropdown.Click();
-            Thread.Sleep(6000);
+            Thread.Sleep(500);
             // Locate the dropdown options and select the desired one based on the provided 'option' parameter
             IWebElement optionToSelect = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='" + option + "']")));
             Thread.Sleep(500);
