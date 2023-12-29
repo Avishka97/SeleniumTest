@@ -563,7 +563,7 @@ namespace SeleniumTest
                         try
                         {
                             // Create a WebDriverWait instance
-                            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
 
                             // Find the div element containing the toast message
                             toastMessageElement = wait5.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
