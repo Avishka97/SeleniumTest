@@ -78,7 +78,7 @@ namespace SeleniumTest
         {
             // Initialize Chrome Driver
             chromeOptions = new ChromeOptions();
-            //chromeOptions.AddArgument("--headless");
+            chromeOptions.AddArgument("--headless");
             //chromeOptions.SetLoggingPreference(LogType.Browser, LogLevel.All);
             chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
             driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
@@ -2098,7 +2098,7 @@ namespace SeleniumTest
             // Use the captured message as needed
             Console.WriteLine("Toast Message: " + toastMessage);
 
-            Thread.Sleep(1000);
+            Thread.Sleep(3000);
 
             // Close the browser
             // driver.Quit();
