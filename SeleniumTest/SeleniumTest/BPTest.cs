@@ -2065,7 +2065,7 @@ namespace SeleniumTest
             IJavaScriptExecutor js1 = (IJavaScriptExecutor)driver;
             js1.ExecuteScript("arguments[0].click();", uploadButton2);
             Console.WriteLine("clicked on submit button");
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
             // Click the upload button
             Console.WriteLine("waiting for toaste message");
 
