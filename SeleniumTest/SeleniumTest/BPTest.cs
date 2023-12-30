@@ -2090,19 +2090,19 @@ namespace SeleniumTest
             Thread.Sleep(3000);
 
 
-            // Check if the driver supports taking screenshots
-            if (driver is ITakesScreenshot takesScreenshot)
-            {
-                // Capture the screenshot
-                Screenshot screenshot = takesScreenshot.GetScreenshot();
+            //// Check if the driver supports taking screenshots
+            //if (driver is ITakesScreenshot takesScreenshot)
+            //{
+            //    // Capture the screenshot
+            //    Screenshot screenshot = takesScreenshot.GetScreenshot();
 
-                // Define the path where you want to save the screenshot
-                string screenshotPath = @"D:\records\scn\screenshot1.png"; // Replace with your desired path and file name
+            //    // Define the path where you want to save the screenshot
+            //    string screenshotPath = @"D:\records\scn\screenshot1.png"; // Replace with your desired path and file name
 
-                // Save the screenshot as PNG
-                screenshot.SaveAsFile(screenshotPath);
-                Console.WriteLine("Screenshot saved to: " + screenshotPath);
-            }
+            //    // Save the screenshot as PNG
+            //    screenshot.SaveAsFile(screenshotPath);
+            //    Console.WriteLine("Screenshot saved to: " + screenshotPath);
+            //}
 
 
 
@@ -2115,19 +2115,19 @@ namespace SeleniumTest
             Console.WriteLine("clicked on publish button");
 
 
-            // Check if the driver supports taking screenshots
-            if (driver is ITakesScreenshot takesScreenshot1)
-            {
-                // Capture the screenshot
-                Screenshot screenshot = takesScreenshot1.GetScreenshot();
+            //// Check if the driver supports taking screenshots
+            //if (driver is ITakesScreenshot takesScreenshot1)
+            //{
+            //    // Capture the screenshot
+            //    Screenshot screenshot = takesScreenshot1.GetScreenshot();
 
-                // Define the path where you want to save the screenshot
-                string screenshotPath = @"D:\records\scn\screenshot2.png"; // Replace with your desired path and file name
+            //    // Define the path where you want to save the screenshot
+            //    string screenshotPath = @"D:\records\scn\screenshot2.png"; // Replace with your desired path and file name
 
-                // Save the screenshot as PNG
-                screenshot.SaveAsFile(screenshotPath);
-                Console.WriteLine("Screenshot saved to: " + screenshotPath);
-            }
+            //    // Save the screenshot as PNG
+            //    screenshot.SaveAsFile(screenshotPath);
+            //    Console.WriteLine("Screenshot saved to: " + screenshotPath);
+            //}
 
 
             Thread.Sleep(1000);
@@ -2138,19 +2138,19 @@ namespace SeleniumTest
             js1.ExecuteScript("arguments[0].click();", uploadButton2);
             Console.WriteLine("clicked on submit button");
 
-            // Check if the driver supports taking screenshots
-            if (driver is ITakesScreenshot takesScreenshot2)
-            {
-                // Capture the screenshot
-                Screenshot screenshot = takesScreenshot2.GetScreenshot();
+            //// Check if the driver supports taking screenshots
+            //if (driver is ITakesScreenshot takesScreenshot2)
+            //{
+            //    // Capture the screenshot
+            //    Screenshot screenshot = takesScreenshot2.GetScreenshot();
 
-                // Define the path where you want to save the screenshot
-                string screenshotPath = @"D:\records\scn\screenshot3.png"; // Replace with your desired path and file name
+            //    // Define the path where you want to save the screenshot
+            //    string screenshotPath = @"D:\records\scn\screenshot3.png"; // Replace with your desired path and file name
 
-                // Save the screenshot as PNG
-                screenshot.SaveAsFile(screenshotPath);
-                Console.WriteLine("Screenshot saved to: " + screenshotPath);
-            }
+            //    // Save the screenshot as PNG
+            //    screenshot.SaveAsFile(screenshotPath);
+            //    Console.WriteLine("Screenshot saved to: " + screenshotPath);
+            //}
 
             Console.WriteLine("waiting for toaste message");
 
@@ -2162,19 +2162,19 @@ namespace SeleniumTest
             toastMessageElement1 = wait11.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
 
 
-            // Check if the driver supports taking screenshots
-            if (driver is ITakesScreenshot takesScreenshot3)
-            {
-                // Capture the screenshot
-                Screenshot screenshot = takesScreenshot3.GetScreenshot();
+            //// Check if the driver supports taking screenshots
+            //if (driver is ITakesScreenshot takesScreenshot3)
+            //{
+            //    // Capture the screenshot
+            //    Screenshot screenshot = takesScreenshot3.GetScreenshot();
 
-                // Define the path where you want to save the screenshot
-                string screenshotPath = @"D:\records\scn\screenshot4.png"; // Replace with your desired path and file name
+            //    // Define the path where you want to save the screenshot
+            //    string screenshotPath = @"D:\records\scn\screenshot4.png"; // Replace with your desired path and file name
 
-                // Save the screenshot as PNG
-                screenshot.SaveAsFile(screenshotPath);
-                Console.WriteLine("Screenshot saved to: " + screenshotPath);
-            }
+            //    // Save the screenshot as PNG
+            //    screenshot.SaveAsFile(screenshotPath);
+            //    Console.WriteLine("Screenshot saved to: " + screenshotPath);
+            //}
 
 
 
