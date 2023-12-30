@@ -21,6 +21,7 @@ using NUnit.Framework;
 
 namespace SeleniumTest
 {
+
     public class TestContext
     {
         public static string OrgUserName { get; set; }
@@ -66,12 +67,6 @@ namespace SeleniumTest
             ArtifactDownloadPath = _configuration["AppSettings:ArtifactDownloadPath"];
         }
 
-        
-
-        //static void Main(string[] args)
-        //{
-
-        //}
 
         [SetUp]
         public void Setup()
@@ -84,6 +79,39 @@ namespace SeleniumTest
             driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
             driver.Manage().Window.Size = new System.Drawing.Size(1920, 6080); // Set a standard window size
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
+        }
+
+        [TearDown]
+        public void Teardown()
+        {
+            Thread.Sleep(1000);
+            // Quit the WebDriver session after all tests
+            driver.Quit();
+        }
+
+
+        private void InitializeDriver(bool headless)
+        {
+            if (headless)
+            {
+                driver?.Dispose();
+                chromeOptions = new ChromeOptions();
+                chromeOptions.AddArgument("--headless");
+                chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+                driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+                driver.Manage().Window.Size = new System.Drawing.Size(1920, 6080); // Set a standard window size
+                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
+            }
+            else
+            {
+                driver?.Dispose();
+                chromeOptions = new ChromeOptions();
+                driver = new ChromeDriver(); // Non-headless mode
+                chromeOptions.AddArgument("--start-maximized"); // Optional: Start the browser maximized
+                driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+                driver.Manage().Window.Size = new System.Drawing.Size(1920, 6080); // Set a standard window size
+                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1200);
+            }
         }
 
 
@@ -405,12 +433,12 @@ namespace SeleniumTest
 
             // Define the base username
             string baseUsername = "BP"+ formattedDate;
-            string baseOrgFname = "BP";
+            string baseOrgFname = "BP" + formattedDate;
             string baseOrgLName = "BoardPAC";
             string baseOrgDisplayName = "BPBoardPAC";
 
             // Initialize a counter
-            int counter =50;
+            int counter =10;
 
             bool userAdded = false;
 
@@ -559,7 +587,7 @@ namespace SeleniumTest
                         try
                         {
                             // Create a WebDriverWait instance
-                            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
+                            WebDriverWait wait5 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
                             // Find the div element containing the toast message
                             toastMessageElement = wait5.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
@@ -1616,13 +1644,13 @@ namespace SeleniumTest
             {
                 // Click on the link to view users if it's clickable
                 viewUserLink.Click();
-                Console.WriteLine("Venue clicked to expanded");
+                Console.WriteLine("Create meeting clicked to expanded");
                 Thread.Sleep(500);
             }
             else
             {
                 // Handle the situation where the link is not clickable
-                Console.WriteLine("Venue link is not clickable.");
+                Console.WriteLine("Create meeting link is not clickable.");
                 // You can add further actions or error handling here if needed
             }
 
@@ -1891,10 +1919,11 @@ namespace SeleniumTest
         [Test, Order(13)]
         public void C_4_OrganizerAgendaUpload()
         {
+            InitializeDriver(false);
             // URL of the login page
             string loginUrl = MainURL + @"/login";
 
-            // Credentials for login
+            //// Credentials for login
             string username = TestContext.OrgUserName;
             string password = TestContext.OrgPassword;
 
@@ -1991,6 +2020,7 @@ namespace SeleniumTest
 
             // Type the meeting name into the input field
             string meetingName = TestContext.MeetingTitle; // Replace this with the actual meeting name
+
             //string meetingName = "BPM12292023";
 
             searchInput.SendKeys(meetingName);
@@ -2045,18 +2075,37 @@ namespace SeleniumTest
             // Copy the folder and its contents recursively to the destination
             CopyFolder(sourceFolderPath, destinationFolderPath);
             Console.WriteLine("copy files to destination server");
-            WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
 
-            Thread.Sleep(2000);
+            Thread.Sleep(3000);
+            WebDriverWait wait8 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
 
             // Wait for the file input element to be available
             IWebElement fileInput = wait8.Until(ExpectedConditions.ElementExists(By.CssSelector("input[name='UploadFiles'][directory='true']")));
 
-            Thread.Sleep(2000);
+            //Thread.Sleep(1000);
             // Send the folder path to the file input element
             fileInput.SendKeys(destinationFolderPath);
+
             Console.WriteLine("start uploading files");
-            Thread.Sleep(2000);
+            Thread.Sleep(3000);
+
+
+            // Check if the driver supports taking screenshots
+            if (driver is ITakesScreenshot takesScreenshot)
+            {
+                // Capture the screenshot
+                Screenshot screenshot = takesScreenshot.GetScreenshot();
+
+                // Define the path where you want to save the screenshot
+                string screenshotPath = @"D:\records\scn\screenshot1.png"; // Replace with your desired path and file name
+
+                // Save the screenshot as PNG
+                screenshot.SaveAsFile(screenshotPath);
+                Console.WriteLine("Screenshot saved to: " + screenshotPath);
+            }
+
+
+
             IWebElement toastMessageElement2 = null;
             //// Find the checkbox element by its ID
             IWebElement publishAllCheckbox = driver.FindElement(By.Id("inlineCheckbox1"));
@@ -2065,7 +2114,23 @@ namespace SeleniumTest
             js.ExecuteScript("arguments[0].click();", publishAllCheckbox);
             Console.WriteLine("clicked on publish button");
 
-            Thread.Sleep(500);
+
+            // Check if the driver supports taking screenshots
+            if (driver is ITakesScreenshot takesScreenshot1)
+            {
+                // Capture the screenshot
+                Screenshot screenshot = takesScreenshot1.GetScreenshot();
+
+                // Define the path where you want to save the screenshot
+                string screenshotPath = @"D:\records\scn\screenshot2.png"; // Replace with your desired path and file name
+
+                // Save the screenshot as PNG
+                screenshot.SaveAsFile(screenshotPath);
+                Console.WriteLine("Screenshot saved to: " + screenshotPath);
+            }
+
+
+            Thread.Sleep(1000);
             // Find the upload button by its ID
             IWebElement uploadButton2 = driver.FindElement(By.Id("btnSubmit"));
 
@@ -2073,30 +2138,51 @@ namespace SeleniumTest
             js1.ExecuteScript("arguments[0].click();", uploadButton2);
             Console.WriteLine("clicked on submit button");
 
-            WebDriverWait wait12 = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
+            // Check if the driver supports taking screenshots
+            if (driver is ITakesScreenshot takesScreenshot2)
+            {
+                // Capture the screenshot
+                Screenshot screenshot = takesScreenshot2.GetScreenshot();
 
-            // Wait for the modal to be present in the DOM
-            IWebElement modal = wait12.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".modal.fade")));
-            Console.WriteLine("Modal is visible");
+                // Define the path where you want to save the screenshot
+                string screenshotPath = @"D:\records\scn\screenshot3.png"; // Replace with your desired path and file name
 
-            // Wait for the modal to disappear
-            wait12.Until(ExpectedConditions.InvisibilityOfElementLocated(By.CssSelector(".modal.fade")));
-            Console.WriteLine("Modal has disappeared");
+                // Save the screenshot as PNG
+                screenshot.SaveAsFile(screenshotPath);
+                Console.WriteLine("Screenshot saved to: " + screenshotPath);
+            }
 
             Console.WriteLine("waiting for toaste message");
 
+            IWebElement toastMessageElement1 = null;
             // Create a WebDriverWait instance
-            WebDriverWait wait11 = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+            WebDriverWait wait11 = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
 
             // Find the div element containing the toast message
-            toastMessageElement2 = wait11.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
-            Console.WriteLine("found the toaste message");
-            // Get the text within the div element
-            string toastMessage = toastMessageElement2.Text;
+            toastMessageElement1 = wait11.Until(ExpectedConditions.ElementExists(By.CssSelector("div.overlay-container div#toast-container.toast-top-right div.toast-message")));
 
+
+            // Check if the driver supports taking screenshots
+            if (driver is ITakesScreenshot takesScreenshot3)
+            {
+                // Capture the screenshot
+                Screenshot screenshot = takesScreenshot3.GetScreenshot();
+
+                // Define the path where you want to save the screenshot
+                string screenshotPath = @"D:\records\scn\screenshot4.png"; // Replace with your desired path and file name
+
+                // Save the screenshot as PNG
+                screenshot.SaveAsFile(screenshotPath);
+                Console.WriteLine("Screenshot saved to: " + screenshotPath);
+            }
+
+
+
+            // Get the text within the div element
+            string toastMessage = toastMessageElement1.Text;
 
             // Use the captured message as needed
-            Console.WriteLine("Toast Message: " + toastMessage);
+            Console.WriteLine("Toast Message2: " + toastMessage);
 
             Thread.Sleep(3000);
 
@@ -2110,6 +2196,7 @@ namespace SeleniumTest
         [Test, Order(14)]
         public void C_5_OrganizerDocumentPackDownload()
         {
+            //InitializeDriver(false);
             // URL of the login page
             string loginUrl = MainURL + @"/login";
 
@@ -2397,7 +2484,7 @@ namespace SeleniumTest
             string titlenew = title + GetCurrentFormattedDate();
             IWebElement titleInput = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("input#title")));
             TestContext.MeetingTitle = titlenew;
-            Console.WriteLine("searched meeting title is set to variable:" + TestContext.MeetingTitle);
+            Console.WriteLine("meeting title is set to variable:" + TestContext.MeetingTitle);
             titleInput.SendKeys(titlenew);
         }
 
@@ -2642,12 +2729,7 @@ namespace SeleniumTest
             }
         }
 
-        [TearDown]
-        public void Teardown()
-        {
-            // Quit the WebDriver session after all tests
-            driver.Quit();
-        }
+       
 
     }
 }
